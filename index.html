@@ -1,0 +1,1972 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gestão de Passagens Aéreas | SAEB</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --azul:#0a3d62; --azul-esc:#062a45; --azul-med:#0f4c81; --azul-claro:#1565c0;
+  --azul-bg:#e8f1fa; --vermelho:#c62828; --vermelho-2:#e53935; --amarelo:#f0a500;
+  --verde:#1b8a5a; --cinza:#64748b; --cinza-2:#94a3b8;
+  --borda:#dbe3ec; --fundo:#f4f7fb; --branco:#fff;
+  --radius:14px; --shadow:0 2px 12px rgba(10,61,98,.08);
+  --shadow-lg:0 12px 40px rgba(10,61,98,.22);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{
+  font-family:'Inter',system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+  background:var(--fundo);color:#1f2d3d;-webkit-font-smoothing:antialiased;
+}
+.app{display:flex;min-height:100vh}
+
+/* ---------- SIDEBAR ---------- */
+.sidebar{
+  width:280px;flex-shrink:0;
+  background:linear-gradient(180deg,#0a3d62 0%,#062a45 100%);
+  color:#fff;display:flex;flex-direction:column;
+  position:sticky;top:0;height:100vh;z-index:120;
+  box-shadow:4px 0 24px rgba(6,42,69,.18);
+}
+.sidebar-brand{
+  padding:22px 20px 18px;border-bottom:1px solid rgba(255,255,255,.1);
+  display:flex;align-items:center;gap:12px;
+}
+.brand-mark{
+  width:44px;height:44px;border-radius:12px;flex-shrink:0;
+  background:linear-gradient(135deg,#1565c0,#0a3d62);
+  display:flex;align-items:center;justify-content:center;
+  font-weight:800;font-size:15px;letter-spacing:.5px;
+  border:1.5px solid rgba(255,255,255,.25);color:#fff;
+}
+.brand-text strong{display:block;font-size:13.5px;letter-spacing:.4px}
+.brand-text span{display:block;font-size:11px;color:#9fc0dd;margin-top:2px}
+.sidebar-label{
+  padding:20px 22px 8px;font-size:10.5px;letter-spacing:1.4px;
+  text-transform:uppercase;color:#7fa8cc;font-weight:700;
+}
+.nav{display:flex;flex-direction:column;gap:4px;padding:0 12px}
+.nav-item{
+  display:flex;align-items:center;gap:12px;padding:12px 14px;
+  background:transparent;border:0;border-left:3px solid transparent;
+  border-radius:10px;color:#c9dcee;font-family:inherit;font-size:13.2px;font-weight:500;
+  text-align:left;cursor:pointer;line-height:1.25;transition:.18s;
+}
+.nav-item svg{width:18px;height:18px;flex-shrink:0;stroke:currentColor;fill:none;stroke-width:1.8}
+.nav-item:hover{background:rgba(255,255,255,.08);color:#fff}
+.nav-item.active{
+  background:linear-gradient(90deg,rgba(21,101,192,.55),rgba(21,101,192,.18));
+  color:#fff;font-weight:600;border-left-color:var(--vermelho-2);
+}
+
+/* --- Rodapé lateral com info de canceladas --- */
+.sidebar-footer{
+  margin-top:auto;padding:14px 16px;
+  border-top:1px solid rgba(255,255,255,.1);
+  font-size:10.5px;color:#7fa8cc;line-height:1.5;
+}
+.sidebar-cancel-info{
+  background:rgba(229,57,53,.10);
+  border:1px solid rgba(229,57,53,.28);
+  border-radius:10px;
+  padding:11px 13px;
+  margin-bottom:14px;
+  font-size:11px;
+  line-height:1.5;
+  color:#ffd5d5;
+  cursor:pointer;
+  transition:.18s;
+}
+.sidebar-cancel-info:hover{
+  background:rgba(229,57,53,.18);
+  border-color:rgba(229,57,53,.5);
+}
+.sidebar-cancel-info .tit{
+  font-size:10px;text-transform:uppercase;letter-spacing:1.1px;
+  color:#ff9a9a;font-weight:800;margin-bottom:7px;
+  display:flex;align-items:center;gap:6px;
+}
+.sidebar-cancel-info .tit::before{
+  content:'';width:6px;height:6px;border-radius:50%;background:#ff6b6b;
+  box-shadow:0 0 6px #ff6b6b;
+}
+.sidebar-cancel-info .row{
+  display:flex;justify-content:space-between;gap:8px;
+  margin-top:4px;color:#ffd5d5;
+}
+.sidebar-cancel-info .row strong{color:#fff;font-weight:700}
+.sidebar-cancel-info .alert{
+  margin-top:9px;padding-top:9px;
+  border-top:1px dashed rgba(255,180,180,.35);
+  color:#ffb347;font-weight:700;font-size:10.5px;
+  display:flex;align-items:center;gap:5px;
+}
+.sidebar-cancel-info .empty-msg{
+  color:#ffbdbd;font-size:11px;font-style:italic;
+}
+
+/* ---------- MAIN ---------- */
+.main{flex:1;min-width:0;display:flex;flex-direction:column}
+.topbar{
+  position:sticky;top:0;z-index:100;background:#fff;padding:12px 26px;
+  display:flex;align-items:center;gap:18px;border-bottom:3px solid transparent;
+  border-image:linear-gradient(90deg,var(--azul) 0%,var(--azul-claro) 45%,var(--amarelo) 70%,var(--vermelho-2) 100%) 1;
+  box-shadow:0 2px 14px rgba(10,61,98,.07);
+}
+.logo-gov{height:54px;width:auto;object-fit:contain}
+.logo-fallback{display:flex;align-items:center;gap:12px}
+.logo-fallback[hidden]{display:none}
+.logo-fallback .mark{
+  width:46px;height:46px;border-radius:11px;
+  background:linear-gradient(135deg,#1565c0,#0a3d62);color:#fff;
+  display:flex;align-items:center;justify-content:center;
+  font-weight:800;font-size:15px;letter-spacing:.5px;
+}
+.logo-fallback strong{display:block;font-size:14px;color:var(--azul);letter-spacing:.5px}
+.logo-fallback span{display:block;font-size:11.5px;color:var(--cinza);margin-top:1px}
+.topbar-titles{flex:1;min-width:0;border-left:1px solid var(--borda);padding-left:18px}
+.topbar-titles h1{font-size:17px;font-weight:800;color:var(--azul);letter-spacing:-.2px}
+.topbar-titles p{font-size:12px;color:var(--cinza);margin-top:2px}
+.topbar-right{text-align:right;font-size:12px;color:var(--cinza);white-space:nowrap}
+.topbar-right strong{display:block;color:var(--azul);font-size:13px}
+.menu-btn{
+  display:none;align-items:center;justify-content:center;
+  width:40px;height:40px;border-radius:10px;border:1px solid var(--borda);
+  background:#fff;cursor:pointer;color:var(--azul);
+}
+
+/* ---------- CONTENT ---------- */
+.content{padding:24px 26px 70px;flex:1}
+.tab-panel{display:none}
+.tab-panel.active{display:block;animation:fadeUp .28s ease}
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+.section-head{
+  display:flex;align-items:center;justify-content:space-between;
+  gap:16px;flex-wrap:wrap;margin-bottom:18px;
+}
+.section-head h2{font-size:19px;font-weight:800;color:var(--azul);letter-spacing:-.3px}
+.section-head p{font-size:12.5px;color:var(--cinza);margin-top:3px}
+
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(205px,1fr));gap:15px;margin-bottom:22px}
+.card{
+  background:#fff;border-radius:var(--radius);padding:17px 18px;
+  box-shadow:var(--shadow);border-left:4px solid var(--azul-claro);
+  position:relative;overflow:hidden;
+}
+.card.red{border-left-color:var(--vermelho-2)}
+.card.green{border-left-color:var(--verde)}
+.card.gold{border-left-color:var(--amarelo)}
+.card .lbl{font-size:11px;text-transform:uppercase;letter-spacing:.9px;color:var(--cinza);font-weight:700}
+.card .val{font-size:22px;font-weight:800;color:var(--azul);margin-top:7px;letter-spacing:-.5px}
+.card .sub{font-size:11.5px;color:var(--cinza-2);margin-top:4px}
+.card.red .val{color:var(--vermelho)}
+.card.green .val{color:var(--verde)}
+
+.card[data-go], .card[data-modal]{
+  cursor:pointer;transition:transform .16s ease, box-shadow .16s ease, border-left-color .16s ease;
+}
+.card[data-go]:hover, .card[data-modal]:hover{
+  transform:translateY(-3px);box-shadow:0 8px 24px rgba(10,61,98,.16);border-left-color:var(--azul);
+}
+.card[data-go]::after{
+  content:'→';position:absolute;top:11px;right:13px;
+  font-size:14px;font-weight:700;color:var(--cinza-2);
+  opacity:.28;transition:.16s;pointer-events:none;
+}
+.card[data-modal]::after{
+  content:'ⓘ';position:absolute;top:8px;right:13px;
+  font-size:17px;font-weight:700;color:var(--cinza-2);
+  opacity:.35;transition:.16s;pointer-events:none;
+}
+.card[data-go]:hover::after{opacity:1;color:var(--azul-claro);transform:translateX(2px)}
+.card[data-modal]:hover::after{opacity:1;color:var(--azul-claro)}
+
+.btn{
+  display:inline-flex;align-items:center;gap:8px;padding:11px 18px;border-radius:10px;
+  border:0;font-family:inherit;font-size:13px;font-weight:600;cursor:pointer;
+  transition:.18s;white-space:nowrap;
+}
+.btn svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2}
+.btn-primary{background:linear-gradient(135deg,#1565c0,#0a3d62);color:#fff;box-shadow:0 4px 14px rgba(21,101,192,.32)}
+.btn-primary:hover{transform:translateY(-1px);box-shadow:0 7px 20px rgba(21,101,192,.4)}
+.btn-danger{background:linear-gradient(135deg,#e53935,#b71c1c);color:#fff;box-shadow:0 4px 14px rgba(198,40,40,.28)}
+.btn-danger:hover{transform:translateY(-1px)}
+.btn-ghost{background:#fff;color:var(--azul);border:1.5px solid var(--borda)}
+.btn-ghost:hover{background:var(--azul-bg);border-color:#b9d3ea}
+.btn-sm{padding:7px 12px;font-size:12px;border-radius:8px}
+
+.table-wrap{background:#fff;border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden;margin-bottom:22px}
+.table-scroll{max-height:62vh;overflow:auto}
+table{width:100%;border-collapse:collapse;font-size:12.5px}
+thead th{
+  position:sticky;top:0;z-index:5;background:var(--azul);color:#fff;
+  padding:12px 12px;text-align:left;font-size:11px;text-transform:uppercase;
+  letter-spacing:.7px;font-weight:700;white-space:nowrap;
+}
+thead th.num{text-align:right}
+tbody td{padding:10px 12px;border-bottom:1px solid #eef2f7;vertical-align:top;line-height:1.42}
+tbody tr:nth-child(even){background:#fafcfe}
+tbody tr:hover{background:#eef6ff}
+tbody td.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap;font-weight:600;color:var(--azul)}
+td.wrap{min-width:220px}
+.td-nome{font-weight:600;color:#12314d;min-width:190px}
+.chip{
+  display:inline-block;padding:2px 8px;border-radius:99px;font-size:10.5px;
+  font-weight:700;letter-spacing:.3px;background:var(--azul-bg);color:var(--azul-med);margin-top:4px;
+}
+.chip.red{background:#fdeaea;color:var(--vermelho)}
+.chip.gold{background:#fff5e0;color:#a86b00}
+.chip.green{background:#e5f6ee;color:var(--verde)}
+
+.search{
+  display:flex;align-items:center;gap:9px;background:#fff;
+  border:1.5px solid var(--borda);border-radius:10px;
+  padding:9px 14px;min-width:260px;flex:1;max-width:420px;
+}
+.search svg{width:16px;height:16px;stroke:var(--cinza-2);fill:none;stroke-width:2;flex-shrink:0}
+.search input{border:0;outline:0;font-family:inherit;font-size:13px;width:100%;background:transparent;color:#1f2d3d}
+
+.contrato-box{
+  background:#fff;border-radius:var(--radius);box-shadow:var(--shadow);
+  padding:22px 24px;margin-bottom:20px;
+}
+.contrato-top{display:flex;justify-content:space-between;align-items:baseline;gap:14px;flex-wrap:wrap;margin-bottom:14px}
+.contrato-top h3{font-size:14px;font-weight:800;color:var(--azul);letter-spacing:-.2px}
+.contrato-top .pct{font-size:26px;font-weight:800;color:var(--vermelho);letter-spacing:-1px}
+.progress-track{
+  position:relative;height:30px;border-radius:99px;
+  background:#f1e5e5;overflow:hidden;
+  box-shadow:inset 0 1px 4px rgba(198,40,40,.12);
+}
+.progress-fill{
+  position:absolute;inset:0;
+  background:linear-gradient(90deg,#c62828 0%,#e53935 100%);
+  clip-path:inset(0 calc(100% - var(--p,0%)) 0 0);
+  transition:clip-path .8s cubic-bezier(.4,0,.2,1);
+  border-radius:99px;
+}
+.progress-labels{display:flex;justify-content:space-between;font-size:11px;color:var(--cinza);margin-top:8px;font-weight:600}
+
+.estimativa{
+  background:#fff;border-radius:var(--radius);box-shadow:var(--shadow);
+  padding:22px 24px;margin-bottom:22px;border-top:4px solid var(--vermelho-2);
+}
+.estimativa h3{font-size:14px;font-weight:800;color:var(--azul);margin-bottom:4px}
+.estimativa .desc{font-size:12px;color:var(--cinza);margin-bottom:16px}
+.est-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px;margin-bottom:16px}
+.est-item{background:var(--azul-bg);border-radius:11px;padding:13px 15px}
+.est-item .l{font-size:10.5px;text-transform:uppercase;letter-spacing:.8px;color:var(--cinza);font-weight:700}
+.est-item .v{font-size:17px;font-weight:800;color:var(--azul);margin-top:5px;letter-spacing:-.4px}
+
+.veredito{
+  display:flex;align-items:flex-start;gap:12px;padding:15px 17px;
+  border-radius:11px;font-size:13px;line-height:1.55;
+}
+.veredito .ico{
+  width:26px;height:26px;border-radius:50%;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+  font-weight:800;font-size:14px;color:#fff;
+}
+.veredito.ok{background:#e8f7f0;color:#0f6b43;border:1px solid #bfe8d5}
+.veredito.ok .ico{background:var(--verde)}
+.veredito.warn{background:#fdecec;color:#8e1b1b;border:1px solid #f8cfcf}
+.veredito.warn .ico{background:var(--vermelho)}
+.veredito.neutro{background:#f1f5f9;color:#475569;border:1px solid #e2e8f0}
+.veredito.neutro .ico{background:var(--cinza-2)}
+.veredito strong{font-weight:800}
+
+.modal{
+  position:fixed;inset:0;z-index:500;background:rgba(6,42,69,.55);
+  backdrop-filter:blur(3px);display:none;align-items:center;justify-content:center;padding:20px;
+}
+.modal.open{display:flex;animation:fadeIn .2s ease}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.modal-card{
+  background:#fff;border-radius:18px;width:min(760px,100%);
+  max-height:92vh;overflow:auto;box-shadow:var(--shadow-lg);
+  animation:pop .25s cubic-bezier(.34,1.4,.64,1);
+}
+.modal-card.sm{width:min(420px,100%)}
+#modalCancelamentos .modal-card{width:min(940px,100%)}
+@keyframes pop{from{opacity:0;transform:scale(.95) translateY(10px)}to{opacity:1;transform:none}}
+.modal-head{
+  padding:20px 24px;border-bottom:1px solid var(--borda);
+  display:flex;align-items:center;justify-content:space-between;gap:14px;
+  position:sticky;top:0;background:#fff;z-index:2;
+}
+.modal-head h3{font-size:16px;font-weight:800;color:var(--azul)}
+.modal-head p{font-size:12px;color:var(--cinza);margin-top:2px}
+.modal-close{
+  width:34px;height:34px;border-radius:9px;border:1px solid var(--borda);
+  background:#fff;cursor:pointer;color:var(--cinza);font-size:17px;line-height:1;
+  display:flex;align-items:center;justify-content:center;transition:.15s;
+}
+.modal-close:hover{background:#fdeaea;color:var(--vermelho);border-color:#f6c7c7}
+.modal-body{padding:22px 24px}
+.modal-foot{
+  padding:16px 24px;border-top:1px solid var(--borda);
+  display:flex;justify-content:flex-end;gap:10px;
+  position:sticky;bottom:0;background:#fff;
+}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:15px}
+.field{display:flex;flex-direction:column;gap:6px}
+.field.full{grid-column:1/-1}
+.field label{font-size:11.5px;font-weight:700;color:#3c5468;letter-spacing:.2px}
+.field label .req{color:var(--vermelho-2)}
+.field input,.field select,.field textarea{
+  font-family:inherit;font-size:13px;color:#1f2d3d;padding:11px 13px;
+  border-radius:9px;border:1.5px solid var(--borda);background:#fbfdff;
+  outline:0;transition:.15s;width:100%;
+}
+.field textarea{resize:vertical;min-height:74px}
+.field input:focus,.field select:focus,.field textarea:focus{
+  border-color:var(--azul-claro);background:#fff;
+  box-shadow:0 0 0 3px rgba(21,101,192,.12);
+}
+.field .hint{font-size:10.5px;color:var(--cinza-2);margin-top:-2px}
+.divider{grid-column:1/-1;height:1px;background:var(--borda);margin:4px 0}
+.grp-title{grid-column:1/-1;font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--azul-med);font-weight:800;margin-top:2px}
+.senha-erro{color:var(--vermelho);font-size:12px;font-weight:600;margin-top:8px;min-height:16px}
+.lock-ico{
+  width:52px;height:52px;border-radius:50%;margin:0 auto 14px;
+  background:var(--azul-bg);display:flex;align-items:center;justify-content:center;
+}
+.lock-ico svg{width:24px;height:24px;stroke:var(--azul);fill:none;stroke-width:1.8}
+
+.toast{
+  position:fixed;bottom:26px;right:26px;z-index:900;background:var(--azul);color:#fff;
+  padding:14px 20px;border-radius:11px;font-size:13px;font-weight:600;
+  box-shadow:0 10px 30px rgba(6,42,69,.35);display:flex;align-items:center;gap:10px;
+  transform:translateY(140%);transition:.35s cubic-bezier(.34,1.4,.64,1);
+}
+.toast.show{transform:none}
+.toast.ok{background:linear-gradient(135deg,#1b8a5a,#0f6b43)}
+.toast.err{background:linear-gradient(135deg,#e53935,#b71c1c)}
+
+.empty{padding:44px 20px;text-align:center;color:var(--cinza-2);font-size:13px}
+.empty strong{display:block;color:var(--cinza);font-size:14px;margin-bottom:5px}
+
+.cancel-server{
+  background:#fff;border:1px solid var(--borda);border-radius:12px;
+  margin-bottom:14px;overflow:hidden;
+}
+.cancel-server-head{
+  background:linear-gradient(90deg,var(--azul-bg),#f5f9fd);
+  padding:12px 16px;display:flex;justify-content:space-between;
+  align-items:center;gap:12px;flex-wrap:wrap;
+  border-bottom:1px solid var(--borda);
+}
+.cancel-server-head .nm{
+  font-size:13.5px;font-weight:800;color:var(--azul);line-height:1.3;
+}
+.cancel-server-head .meta{font-size:11px;color:var(--cinza);margin-top:2px;font-weight:500}
+.cancel-server-head .tot{
+  font-size:13px;font-weight:800;color:var(--azul);
+  background:#fff;padding:5px 12px;border-radius:99px;border:1px solid var(--borda);
+}
+.cancel-item{
+  display:flex;justify-content:space-between;align-items:flex-start;gap:14px;
+  padding:12px 16px;border-bottom:1px solid #f1f5f9;flex-wrap:wrap;
+}
+.cancel-item:last-child{border-bottom:0}
+.cancel-item .inf{flex:1;min-width:200px}
+.cancel-item .dest{font-size:12.5px;font-weight:700;color:#1f2d3d}
+.cancel-item .meta{font-size:11px;color:var(--cinza);margin-top:3px;line-height:1.45}
+.cancel-item .rt{text-align:right;min-width:200px}
+.cancel-item .val{font-size:14px;font-weight:800;color:var(--azul)}
+.cancel-item .valid{font-size:11px;color:var(--cinza);margin-top:3px;line-height:1.5}
+.cancel-item .valid strong{color:#1f2d3d;font-weight:700}
+
+/* Info box no modal sobre a regra */
+.regra-credito{
+  background:linear-gradient(90deg,#fff8e5,#fffbf0);
+  border:1px solid #f0d99a;border-radius:11px;
+  padding:12px 15px;margin-bottom:16px;
+  font-size:12px;color:#7a5a10;line-height:1.55;
+}
+.regra-credito strong{color:#5a4208}
+
+@media(max-width:980px){
+  .sidebar{position:fixed;left:0;top:0;transform:translateX(-100%);transition:.3s}
+  .sidebar.open{transform:none}
+  .menu-btn{display:flex}
+  .form-grid{grid-template-columns:1fr}
+  .topbar{padding:10px 14px;gap:12px}
+  .logo-gov{height:42px}
+  .topbar-titles h1{font-size:14.5px}
+  .topbar-right{display:none}
+  .content{padding:18px 14px 60px}
+  .cancel-item .rt{text-align:left;min-width:0}
+}
+@media(max-width:520px){
+  .section-head{flex-direction:column;align-items:stretch}
+  .search{max-width:none}
+  .cards{grid-template-columns:1fr 1fr}
+  .card .val{font-size:18px}
+}
+</style>
+</head>
+<body>
+
+<div class="app">
+
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-brand">
+      <div class="brand-mark">SAEB</div>
+      <div class="brand-text">
+        <strong>Passagens Aéreas</strong>
+        <span>Gestão de Contratos</span>
+      </div>
+    </div>
+
+    <div class="sidebar-label">Painéis</div>
+    <nav class="nav">
+      <button class="nav-item active" data-tab="dashboard">
+        <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg>
+        <span>Dashboard<br><small style="opacity:.7;font-weight:400">Visão Geral</small></span>
+      </button>
+      <button class="nav-item" data-tab="vn">
+        <svg viewBox="0 0 24 24"><path d="M2 12l20-8-8 20-2.5-8.5L2 12z"/></svg>
+        <span>Registro de viagens<br><small style="opacity:.7;font-weight:400">VN Soares</small></span>
+      </button>
+      <button class="nav-item" data-tab="aires">
+        <svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h10"/></svg>
+        <span>Registro de Passagens<br><small style="opacity:.7;font-weight:400">Aires</small></span>
+      </button>
+      <button class="nav-item" data-tab="faturas">
+        <svg viewBox="0 0 24 24"><path d="M6 3h9l4 4v14H6z"/><path d="M9 12h7M9 16h5M9 8h3"/></svg>
+        <span>Registro de Faturas<br><small style="opacity:.7;font-weight:400">Aires</small></span>
+      </button>
+      <button class="nav-item" data-tab="canceladas">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9 9l6 6M15 9l-6 6"/></svg>
+        <span>Passagens Canceladas<br><small style="opacity:.7;font-weight:400">Aires</small></span>
+      </button>
+    </nav>
+
+    <div class="sidebar-footer">
+      <!-- Rodapé dinâmico com info de canceladas -->
+      <div class="sidebar-cancel-info" id="sidebarCancelInfo" title="Clique para ver detalhes dos créditos"></div>
+      Secretaria da Administração<br>
+      Governo do Estado da Bahia<br>
+      <span style="opacity:.6">v1.4 · Painel de Contratos</span>
+    </div>
+  </aside>
+
+  <div class="main">
+    <header class="topbar">
+      <button class="menu-btn" id="menuBtn" aria-label="Menu">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+      </button>
+
+      <img src="governo-bahia.png" alt="Governo do Estado da Bahia" class="logo-gov"
+           onerror="this.remove();document.getElementById('logoFallback').hidden=false;">
+      <div class="logo-fallback" id="logoFallback" hidden>
+        <div class="mark">BA</div>
+        <div>
+          <strong>GOVERNO DO ESTADO DA BAHIA</strong>
+          <span>Secretaria da Administração</span>
+        </div>
+      </div>
+
+      <div class="topbar-titles">
+        <h1>Dashboard de Passagens Aéreas</h1>
+        <p>Controle de viagens, saldos e projeções contratuais</p>
+      </div>
+
+      <div class="topbar-right">
+        <strong id="dataHoje"></strong>
+        <span>Painel de Gestão</span>
+      </div>
+    </header>
+
+    <main class="content">
+
+      <!-- DASHBOARD -->
+      <section id="tab-dashboard" class="tab-panel active">
+        <div class="section-head">
+          <div>
+            <h2>Dashboard — Contrato Aires</h2>
+            <p>Resumo e projeção · toda passagem (ativa ou cancelada) é descontada do contrato</p>
+          </div>
+        </div>
+
+        <div class="cards" id="dashAiresCards"></div>
+
+        <div class="contrato-box">
+          <div class="contrato-top">
+            <div>
+              <h3>Consumo do Contrato Aires</h3>
+              <p style="font-size:12px;color:var(--cinza);margin-top:3px">
+                Contrato de R$ 300.000,00 · Vigência: 03/11/2026 a 02/11/2027 (12 meses)
+              </p>
+            </div>
+            <div class="pct" id="barPct">0,0%</div>
+          </div>
+          <div class="progress-track">
+            <div class="progress-fill" id="barFill" style="--p:0%"></div>
+          </div>
+          <div class="progress-labels">
+            <span>R$ 0,00</span>
+            <span>R$ 150.000,00</span>
+            <span>R$ 300.000,00</span>
+          </div>
+        </div>
+
+        <div class="estimativa">
+          <h3>Estimativa de duração do saldo contratual</h3>
+          <p class="desc">Projeção baseada no consumo total do contrato (passagens ativas + canceladas).</p>
+          <div class="est-grid" id="estGrid"></div>
+          <div id="vereditoBox"></div>
+        </div>
+      </section>
+
+      <!-- VN SOARES -->
+      <section id="tab-vn" class="tab-panel">
+        <div class="section-head">
+          <div>
+            <h2>Registro de Viagens — VN Soares</h2>
+            <p>Contrato 22/10/2025 a 21/10/2026 · Empresa: VN Soares - Viaje Bem Mais LTDA</p>
+          </div>
+          <div class="search">
+            <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+            <input type="text" id="vnBusca" placeholder="Buscar por servidor, processo, setor, destino ou motivo...">
+          </div>
+        </div>
+
+        <div class="cards" id="vnCards"></div>
+
+        <div class="table-wrap">
+          <div class="table-scroll">
+            <table>
+              <thead>
+                <tr>
+                  <th>Nº</th><th>Servidor(a)</th><th>Processo SEI</th><th>Setor</th>
+                  <th>Destino</th><th>Companhia</th><th>Compra</th><th>Ida</th><th>Volta</th>
+                  <th class="num">Valor</th><th>Motivo</th><th>Observação</th>
+                </tr>
+              </thead>
+              <tbody id="vnTbody"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- AIRES — PASSAGENS -->
+      <section id="tab-aires" class="tab-panel">
+        <div class="section-head">
+          <div>
+            <h2>Registro de Passagens — Aires</h2>
+            <p>Contrato de R$ 300.000,00 · Vigência: 03/11/2026 a 02/11/2027 (12 meses)</p>
+          </div>
+          <button class="btn btn-primary" id="btnNovaPassagem">
+            <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+            Adicionar nova passagem
+          </button>
+        </div>
+
+        <div class="cards" id="airesCards"></div>
+
+        <div class="table-wrap">
+          <div class="table-scroll">
+            <table>
+              <thead>
+                <tr>
+                  <th>Servidor(a)</th><th>Processo SEI</th><th>Setor</th><th>Destino</th>
+                  <th>Ida</th><th>Volta</th><th>Companhia</th>
+                  <th>Localizador</th><th>Bilhete</th><th>Compra</th>
+                  <th class="num">Valor</th><th>Motivo</th><th>Observação</th>
+                  <th style="text-align:center">Ações</th>
+                </tr>
+              </thead>
+              <tbody id="airesTbody"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- AIRES — FATURAS -->
+      <section id="tab-faturas" class="tab-panel">
+        <div class="section-head">
+          <div>
+            <h2>Registro de Faturas — Aires</h2>
+            <p>Controle das faturas emitidas pela agência referentes ao contrato.</p>
+          </div>
+          <button class="btn btn-primary" id="btnNovaFatura">
+            <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+            Adicionar fatura
+          </button>
+        </div>
+
+        <div class="cards" id="faturasCards"></div>
+
+        <div class="table-wrap">
+          <div class="table-scroll">
+            <table>
+              <thead>
+                <tr>
+                  <th>Nº da Fatura</th><th>Data de Emissão</th><th>Período de Referência</th>
+                  <th class="num">Valor</th><th>Observação</th>
+                  <th style="text-align:center">Ações</th>
+                </tr>
+              </thead>
+              <tbody id="faturasTbody"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- AIRES — CANCELADAS -->
+      <section id="tab-canceladas" class="tab-panel">
+        <div class="section-head">
+          <div>
+            <h2>Registro de Passagens Canceladas — Aires</h2>
+            <p>Crédito válido por 1 ano a partir da <strong>data da compra</strong> · no nome do servidor</p>
+          </div>
+          <button class="btn btn-danger" id="btnNovaCancelada">
+            <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+            Adicionar passagem cancelada
+          </button>
+        </div>
+
+        <div class="cards" id="cancelCards"></div>
+
+        <div class="table-wrap">
+          <div class="table-scroll">
+            <table>
+              <thead>
+                <tr>
+                  <th>Servidor(a)</th><th>Processo SEI</th><th>Setor</th><th>Destino</th>
+                  <th>Compra</th><th>Cancelamento</th>
+                  <th class="num">Valor</th>
+                  <th>Motivo</th><th>Validade do crédito</th>
+                  <th style="text-align:center">Ações</th>
+                </tr>
+              </thead>
+              <tbody id="cancelTbody"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+</div>
+
+<!-- MODAL — PASSAGEM -->
+<div class="modal" id="modalPassagem">
+  <div class="modal-card">
+    <div class="modal-head">
+      <div>
+        <h3 id="modalPassagemTitulo">Adicionar nova passagem</h3>
+        <p id="modalPassagemSub">Contrato Aires · preencha os dados da passagem aérea</p>
+      </div>
+      <button class="modal-close" data-close="modalPassagem">✕</button>
+    </div>
+
+    <form id="formPassagem">
+      <div class="modal-body">
+        <div class="form-grid">
+          <div class="grp-title">Dados do servidor</div>
+
+          <div class="field full">
+            <label for="fNome">Nome do servidor(a) <span class="req">*</span></label>
+            <input type="text" id="fNome" required placeholder="Ex.: João da Silva Santos">
+          </div>
+
+          <div class="field">
+            <label for="fProcesso">Número do processo SEI</label>
+            <input type="text" id="fProcesso" placeholder="000.0000.0000.0000000-00">
+          </div>
+
+          <div class="field">
+            <label for="fSetor">Setor que o servidor está alocado</label>
+            <input type="text" id="fSetor" placeholder="Ex.: SGI, GAB, SRH...">
+          </div>
+
+          <div class="divider"></div>
+          <div class="grp-title">Trecho e datas</div>
+
+          <div class="field">
+            <label for="fPartida">Cidade de partida <span class="req">*</span></label>
+            <input type="text" id="fPartida" required placeholder="Ex.: Salvador (SSA)">
+          </div>
+
+          <div class="field">
+            <label for="fChegada">Cidade de chegada <span class="req">*</span></label>
+            <input type="text" id="fChegada" required placeholder="Ex.: Brasília (BSB)">
+          </div>
+
+          <div class="field">
+            <label for="fIda">Data da ida <span class="req">*</span></label>
+            <input type="date" id="fIda" required>
+          </div>
+
+          <div class="field">
+            <label for="fVolta">Data da volta</label>
+            <input type="date" id="fVolta">
+          </div>
+
+          <div class="divider"></div>
+          <div class="grp-title">Dados da passagem</div>
+
+          <div class="field">
+            <label for="fCia">Companhia aérea</label>
+            <input type="text" id="fCia" placeholder="Ex.: LATAM, GOL, AZUL...">
+          </div>
+
+          <div class="field">
+            <label for="fValor">Valor total da passagem (R$) <span class="req">*</span></label>
+            <input type="number" id="fValor" step="0.01" min="0" required placeholder="0,00">
+          </div>
+
+          <div class="field">
+            <label for="fLocalizador">Localizador <span class="req">*</span></label>
+            <input type="text" id="fLocalizador" required
+                   pattern="[A-Za-z]+" title="Use apenas letras (A-Z)"
+                   placeholder="Ex.: ABCDEFG" maxlength="12"
+                   style="text-transform:uppercase;letter-spacing:.5px">
+            <div class="hint">Somente letras</div>
+          </div>
+
+          <div class="field">
+            <label for="fBilhete">Bilhete <span class="req">*</span></label>
+            <input type="text" id="fBilhete" required
+                   pattern="[0-9]+" inputmode="numeric"
+                   title="Use apenas números inteiros (0-9)"
+                   placeholder="Ex.: 1234567890123">
+            <div class="hint">Somente números inteiros</div>
+          </div>
+
+          <div class="field">
+            <label for="fDataCompra">Data da compra <span class="req">*</span></label>
+            <input type="date" id="fDataCompra" required>
+            <div class="hint" id="hintDataCompra" style="display:none">
+              A validade do crédito (1 ano) é contada a partir desta data
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="fMotivo">Motivo da passagem</label>
+            <input type="text" id="fMotivo" placeholder="Ex.: CONSAD, evento, capacitação...">
+          </div>
+
+          <div class="field full" id="fieldCancelamento" style="display:none">
+            <label for="fDataCancelamento">Data do cancelamento</label>
+            <input type="date" id="fDataCancelamento">
+            <div class="hint">Apenas registro histórico. O prazo de 1 ano conta da data da compra.</div>
+          </div>
+
+          <div class="field full">
+            <label for="fObs">Observação</label>
+            <textarea id="fObs" placeholder="Informações complementares (viagem internacional, seguro, etc.)"></textarea>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-foot">
+        <button type="button" class="btn btn-ghost" data-close="modalPassagem">Cancelar</button>
+        <button type="submit" class="btn btn-primary">
+          <svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg>
+          Salvar passagem
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- MODAL — SENHA -->
+<div class="modal" id="modalSenha">
+  <div class="modal-card sm">
+    <div class="modal-head">
+      <div>
+        <h3>Confirmação necessária</h3>
+        <p>Esta ação exige autorização</p>
+      </div>
+      <button class="modal-close" data-close="modalSenha">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="lock-ico">
+        <svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 118 0v4"/></svg>
+      </div>
+      <div class="field">
+        <label for="senhaInput">Digite a senha para continuar</label>
+        <input type="password" id="senhaInput" placeholder="••••••••" autocomplete="off">
+        <div class="senha-erro" id="senhaErro"></div>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button type="button" class="btn btn-ghost" data-close="modalSenha">Cancelar</button>
+      <button type="button" class="btn btn-danger" id="btnConfirmarSenha">Confirmar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL — FATURA -->
+<div class="modal" id="modalFatura">
+  <div class="modal-card sm">
+    <div class="modal-head">
+      <div>
+        <h3 id="modalFaturaTitulo">Adicionar fatura</h3>
+        <p>Contrato Aires</p>
+      </div>
+      <button class="modal-close" data-close="modalFatura">✕</button>
+    </div>
+    <form id="formFatura">
+      <div class="modal-body">
+        <div class="form-grid" style="grid-template-columns:1fr">
+          <div class="field">
+            <label for="fatNumero">Número da fatura <span class="req">*</span></label>
+            <input type="text" id="fatNumero" required placeholder="Ex.: 2026/00123">
+          </div>
+          <div class="field">
+            <label for="fatData">Data de emissão <span class="req">*</span></label>
+            <input type="date" id="fatData" required>
+          </div>
+          <div class="field">
+            <label for="fatPeriodo">Período de referência</label>
+            <input type="text" id="fatPeriodo" placeholder="Ex.: Novembro/2026">
+          </div>
+          <div class="field">
+            <label for="fatValor">Valor (R$) <span class="req">*</span></label>
+            <input type="number" id="fatValor" step="0.01" min="0" required placeholder="0,00">
+          </div>
+          <div class="field">
+            <label for="fatObs">Observação</label>
+            <textarea id="fatObs" placeholder="Informações complementares"></textarea>
+          </div>
+        </div>
+      </div>
+      <div class="modal-foot">
+        <button type="button" class="btn btn-ghost" data-close="modalFatura">Cancelar</button>
+        <button type="submit" class="btn btn-primary">Salvar fatura</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- MODAL — CANCELAMENTOS -->
+<div class="modal" id="modalCancelamentos">
+  <div class="modal-card">
+    <div class="modal-head">
+      <div>
+        <h3>Saldo de Passagens Canceladas</h3>
+        <p>Crédito vinculado ao servidor · validade de 1 ano a partir da data da compra</p>
+      </div>
+      <button class="modal-close" data-close="modalCancelamentos">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="regra-credito">
+        <strong>Como funciona:</strong> mesmo cancelada, a passagem já foi descontada do contrato.
+        O valor fica como crédito no nome do servidor que a comprou e pode ser utilizado em
+        até <strong>1 ano da data da compra</strong>. Após esse prazo o crédito expira.
+      </div>
+      <div class="cards" id="cancelSummary" style="margin-bottom:18px"></div>
+      <div id="cancelList"></div>
+    </div>
+    <div class="modal-foot">
+      <button type="button" class="btn btn-ghost" data-close="modalCancelamentos">Fechar</button>
+      <button type="button" class="btn btn-primary" id="btnIrCanceladas">Ver aba completa</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ============================================================
+   CONFIGURAÇÕES
+   ============================================================ */
+const SENHA = 'apolo12';
+const VALOR_CONTRATO_AIRES = 300000;
+const INICIO_CONTRATO = new Date(2026, 10, 3);
+const FIM_CONTRATO    = new Date(2027, 10, 2);
+const KEY_PASSAGENS = 'saeb_aires_passagens_v1';
+const KEY_FATURAS   = 'saeb_aires_faturas_v1';
+
+/* ============================================================
+   DADOS VN SOARES
+   ============================================================ */
+const VN_RAW = `
+1|Igor Oliveira Takenami|009.0277.2025.0053490-10|SGI|SSA x Assunção x SSA|LATAM|01/11/2025|09/11/2025|14/11/2025|3128.16|CLAD|Viagem Internacional
+2|Rodrigo Pimentel de Souza Lima|009.0147.2025.0057212-16|GAB|SSA x Porto Alegre x SSA|GOL / LATAM|03/11/2025|25/11/2025|28/11/2025|1551.81|CONSAD|
+3|Rodrigo Vilas Bôas de Sena|009.0654.2025.0055428-36|ASCOM|SSA x Porto Alegre x SSA|GOL / LATAM|03/11/2025|25/11/2025|28/11/2025|1373.49|CONSAD|
+4|Maria do Rosário Costa Muricy e Eduardo Luiz da Conceição Pimenta|009.0241.2025.0055103-14 / 009.0241.2025.0047804-15|SUPREV|SSA x Macapá x SSA|GOL|03/11/2025|01/12/2025|03/12/2025|10319.36|CONAPREV|
+5|Danielle Thomaz Ferreira Cintra|009.0147.2025.0058056-57|CHEFIA GAB|SSA x Brasília x SSA|LATAM / GOL|03/11/2025|01/12/2025|03/12/2025|2662.95|Evento / MGI|
+6|Ivone Maria Silva Miranda|009.0238.2025.0057103-26|SRH/DDE|SSA x Porto Alegre x SSA|GOL|05/11/2025|25/11/2025|28/11/2025|1462.60|CONSAD|
+7|Maria Lícia Piñeiro Fernandez Telles|009.0218.2025.0057251-42|SRH|SSA x Porto Alegre x SSA|GOL|05/11/2025|25/11/2025|28/11/2025|1462.60|CONSAD|
+8|Geisiane Dias Magalhães|009.0207.2025.0056504-16|SRL|SSA x Porto Alegre x SSA|GOL / LATAM|05/11/2025|25/11/2025|28/11/2025|1993.90|CONSAD|
+9|Richard Mendes Dutzmann|009.0241.2025.0055855-94|SUPREV|SP x SSA x SP|GOL|06/11/2025|13/11/2025|13/11/2025|3723.34|Evento|Colaborador Eventual
+10|Paulo Emanuel Pimenta Dos Santos|009.0147.2025.0058054-95|GAB|SSA x Porto Alegre x SSA|GOL / LATAM|06/11/2025|25/11/2025|28/11/2025|2407.60|CONSAD|
+11|Rodrigo Pimentel de Souza Lima|009.0147.2025.0059978-91|GAB|SSA x Washington x SSA|GOL / UNITED|11/11/2025|06/12/2025|13/12/2025|12849.00|CONSAD|Viagem Internacional
+12|Rodrigo Pimentel de Souza Lima|009.0147.2025.0059978-91|GAB|SSA x Washington x SSA|UNIVERSAL ASSISTANCE|18/11/2025|06/12/2025|14/12/2025|455.20|CONSAD|Seguro Viagem
+13|Igor Oliveira Takenami|009.0277.2025.0059914-12|SGI|SSA x São Paulo x SSA|GOL / LATAM|24/11/2025|02/12/2025|02/12/2025|1221.15|Evento|WhatsApp Sessions
+14|Luiz Eduardo Barreto Perez|009.2030.2025.0062203-90|PLANSERV|RJ x Belo Horizonte x SSA|GOL / AZUL|27/11/2025|30/11/2025|02/12/2025|5614.64|Evento|
+15|Rodrigo Pimentel de Souza Lima|009.0147.2025.0063966-70|GAB|Montreal x SP x SSA|AIR CANADA|10/12/2025|13/12/2025|14/12/2025|9745.36|CONSAD|Alteração Viagem Internacional
+16|Luiz Eduardo Perez e Jeferson Guimarães|009.2030.2026.0000864-21|PLANSERV|SSA x Porto Seguro x SSA|GOL|10/01/2026|13/01/2026|14/01/2026|5566.24|Prestação de Contas 2025|
+17|Paulo Emanuel Pimenta dos Santos|009.0186.2026.0003750-33|CCL|SSA x Florianópolis x SSA|LATAM / GOL|19/01/2026|24/02/2026|28/02/2026|2087.32|Evento|
+18|Rodrigo Pimentel de Souza Lima|009.0147.2026.0003404-01|GAB|SSA x Macapá x SSA|LATAM|22/01/2026|25/03/2026|28/03/2026|1870.36|CONSAD|Cancelada
+19|Rodrigo Pimentel de Souza Lima|009.0147.2026.0003654-98|GAB|SSA x Florianópolis x SSA|LATAM / GOL|22/01/2026|24/02/2026|26/02/2026|1297.50|Pregoeiros Summit 2026|Cancelada
+20|Richard Mendes Dutzmann|009.0241.2026.0002425-41|SUPREV|SSA x São Paulo x SSA|LATAM / GOL|27/01/2026|09/02/2026|11/02/2026|2268.40|Reunião CONPREV|
+21|Daniel Peixoto de Albuquerque|009.2030.2026.0005152-16|PLANSERV|Belo Horizonte x SSA|LATAM / GOL|03/02/2026|04/02/2026|11/02/2026|4524.18|Prestando Serviços|
+22|Igor Oliveira Takenami|009.0277.2026.0003930-97|SGI|SSA x Florianópolis x SSA|LATAM / GOL|10/02/2026|04/03/2026|06/02/2026|2908.32|PROPEN|
+23|Paulo Emanuel Pimenta dos Santos, Adriano Oliveira Menezes, Lauro Macedo Costa Junior, Alim dos Prazeres Mota Junior, Marcos Britto Corrales, Geisiane Dias Magalhães e Alex Britto Dantas|009.0180.2026.0009494-01|SAEB|SSA x Foz do Iguaçu x SSA|LATAM / GOL|24/02/2026|22/03/2026|27/02/2026|32286.75|21º Congresso|
+24|Maria do Rosário Costa Muricy e Eduardo Luiz da Conceição Pimenta|009.0241.2026.0010045-71|SUPREV|SSA x Florianópolis x SSA|AZUL|02/03/2026|04/03/2026|06/03/2026|12741.92|8º Congresso|
+25|Daniel Peixoto de Albuquerque|009.2030.2026.0012123-65|PLANSERV|Belo Horizonte x SSA|GOL / AZUL|03/03/2026|03/03/2026|06/03/2026|5169.68|Consultor|
+26|Anderson Vasconconcelos Prazeres|009.0277.2026.0011371-16|SGI|SSA x São Paulo x SSA|LATAM|05/03/2026|16/03/2026|17/03/2026|1913.71|SAP House|
+27|Adriano Tambone e José Roberto da Silva Reis|009.0218.2026.0011753-35|SRH|SSA x São Paulo x SSA|LATAM|06/03/2026|16/03/2026|17/03/2026|4021.54|SAP House|
+28|Daniel Peixoto de Albuquerque|009.2030.2026.0012963-64|PLANSERV|Belo Horizonte x SSA|GOL|06/03/2026|10/03/2026|12/03/2026|2627.45|Consultor|
+29|Rodrigo Pimentel de Souza Lima|009.0147.2026.0014485-67|GAB|SSA x Macapá x SSA|GOL / LATAM|10/03/2026|24/03/2026|28/03/2026|6308.28|Prêmio iBEST 2026|
+30|Maria do Rosário Costa Muricy e Eduardo Luiz da Conceição Pimenta|009.0241.2026.0006001-38|SUPREV|SSA x Goiânia x SSA|AZUL|11/03/2026|30/03/2026|31/03/2026|4537.88|CONAPREV|
+31|Daniel Peixoto de Albuquerque|009.2030.2026.0014462-77|PLANSERV|Belo Horizonte x SSA|GOL|13/03/2026|16/03/2026|20/03/2026|2872.43|Consultor|
+32|Thales José Costa de Almeida|009.0277.2026.0011892-64|SGI|SSA x Porto Seguro x SSA|GOL|13/03/2026|16/04/2026|20/04/2026|2242.23|IT Forum|
+33|Rodrigo Vilas Bôas de Sena|009.0654.2026.0015377-91|ASCOM|SSA x Macapá x SSA|LATAM / GOL|16/03/2026|25/03/2026|28/03/2026|6141.44|CONSAD|
+34|Rodrigo Pimentel de Souza Lima|009.0147.2026.0014485-67|GAB|SSA x Macapá x SSA|AZUL|16/03/2026|-|27/03/2026|3222.20|CONSAD|Cancelada
+35|Érica Nildes de Jesus Lago|009.0654.2026.0014383-85|ASCOM|SSA x São Paulo x SSA|GOL|19/03/2026|23/03/2026|25/03/2026|2275.97|Cerimônia iBest 2026|
+36|Rodrigo Pimentel de Souza Lima|009.0147.2026.0018715-67|GAB|SSA x Macapá x SSA|GOL|20/03/2026|-|26/03/2026|3350.00|CONSAD|
+37|Daniel Peixoto de Albuquerque|009.2030.2026.0018139-54|PLANSERV|Belo Horizonte x SSA|AZUL|27/03/2026|30/03/2026|02/04/2026|2855.06|Consultor|
+38|Poliana Santana Peixoto|009.0277.2026.0018064-84|SGI|SSA x Brasília x SSA|LATAM / AZUL|08/04/2026|14/04/2026|15/04/2026|1548.56|Evento|
+39|Daniel Peixoto de Albuquerque|009.2030.2026.0021784-54|PLANSERV|Belo Horizonte x SSA|AZUL|10/04/2026|13/04/2026|24/04/2026|3147.59|Consultor|
+40|Tayana Santana de Souza Moura, Márcio Serapião Batista e Paulo Emanuel Pimenta dos Santos|009.0207.2026.0020857-60|SRL e CCL|SSA x São Paulo x SSA|LATAM|10/04/2026|21/04/2026|24/04/2026|9423.78|Evento|
+41|Rodrigo Pimentel de Souza Lima|009.0147.2026.0024285-86|GAB|SSA x Brasília x SSA|LATAM|16/04/2026|07/05/2026|07/05/2026|1019.46|BAHIA MAIS DIGITAL|Cancelada
+42|Danielle Thomaz Ferreira Cintra|009.0159.2026.0017233-13|GAB|SSA x São Paulo x SSA|LATAM|16/04/2026|13/05/2026|17/05/2026|1453.11|Mestrado Profissional|
+43|Tatiane Cezar Pereira e Lucas Morais Moreira|009.0165.2026.0020184-08|CGR|SSA x Curitiba x SSA|AZUL / LATAM|17/04/2026|12/05/2026|15/05/2026|3580.98|Encontro de Corregedorias|
+44|Thales José Costa de Almeida e Igor Oliveira Takenami|009.0277.2026.0022231-64|SGI|SSA x São Paulo x SSA|LATAM|23/04/2026|28/04/2026|29/04/2026|7072.94|Gartner Data & Analytics|
+45|Igor Oliveira Takenami|009.0277.2026.0024254-68|SGI|SSA x Brasília x SSA|LATAM|24/04/2026|07/05/2026|07/05/2026|1457.52|Revisão de Carteira|
+46|Paulo Emanuel Pimenta Dos Santos|009.0186.2026.0025449-16|CCL|SSA x Fortaleza x SSA|LATAM|28/04/2026|19/05/2026|22/05/2026|2724.38|CONSAD|
+47|Rodrigo Vilas Bôas de Sena e Débora Cristina Fernandes Santos|009.0654.2026.0024970-91|ASCOM|SSA x Fortaleza x SSA|GOL|28/04/2026|19/05/2026|22/05/2026|4040.46|CONSAD|
+48|Rodrigo Pimentel de Souza Lima|009.0147.2026.0024285-86|GAB|SSA x Brasília x SSA|LATAM|29/04/2026|05/05/2026|07/05/2026|2994.00|BAHIA MAIS DIGITAL|
+49|Elba Cristina Sanches de Andrade|009.7338.2026.0027903-60|CIIIAP|SSA x Fortaleza x SSA|GOL|29/04/2026|18/05/2026|22/05/2026|2233.96|CONSAD|
+50|Rodrigo Pimentel de Souza Lima|009.0147.2026.0027469-52|GAB|SSA x Atlanta x SSA|DELTA|29/04/2026|09/05/2026|16/05/2026|60668.85|RED HAT SUMMIT 2026|Viagem Internacional
+51|Elianna Almeida Rebouças e Francis Karol Gonçalves de Almeida|009.0240.2026.0024982-79|SRH/DDE|SSA x Fortaleza x SSA|GOL|30/04/2026|19/05/2026|22/05/2026|4465.52|CONSAD|
+52|Rodrigo Pimentel de Souza Lima|009.7338.2026.0027903-60|GAB|SSA x Fortaleza x SSA|GOL/LATAM|30/04/2026|20/05/2026|22/05/2026|3495.13|CONSAD|
+53|Carolina Nascimento de Almeida|009.0159.2026.0017233-13|APG|SSA x São Paulo x SSA|GOL|04/05/2026|13/05/2026|16/05/2026|1179.13|Mestrado FGV|
+54|Rodrigo Pimentel de Souza Lima|009.0147.2026.0027469-52|GAB|SSA x Atlanta x SSA|AFFINITY 100|04/05/2026|09/05/2026|16/05/2026|458.04|RED HAT SUMMIT 2026|Seguro
+55|Carolina Nascimento de Almeida e Neyla Maria Rodrigues Guedes Santana|009.0148.2026.0026484-19|APG|SSA x Brasília x SSA|GOL|04/05/2026|05/05/2026|07/05/2026|8207.00|2º Congresso CONSEPLAN|
+56|Luiz Eduardo Barreto Perez|009.2030.2026.0014673-55|PLANSERV|Belo Horizonte x Brasília x SSA|GOL / LATAM|05/05/2026|11/05/2026|13/05/2026|2750.10|Congresso CONESSP|
+57|Cristiane Souza Nascimento e Jurandi Moreira Angelim Júnior|009.0207.2026.0024638-96|SRL|SSA x Fortaleza x SSA|GOL|05/05/2026|19/05/2026|22/05/2026|4561.56|CONSAD|
+58|Igor Oliveira Takenami e Josefina Elvira Trindade Ramos Rios|009.0277.2026.0025691-17|SGI|SSA x Fortaleza x SSA|GOL|05/05/2026|19/05/2026|22/05/2026|6536.48|CONSAD|
+59|Geisiane Dias Magalhães|009.0207.2026.0024638-96|SRL|SSA x Fortaleza x SSA|GOL|06/05/2026|19/05/2026|22/05/2026|3489.43|CONSAD|
+60|Flávio Machado Barbosa, Larissa de Oliveira Vargas Vivas, Nilza de Carvalho Rios, Herberth Passos Lima, Adroaldo José Paranhos Bispo e Ingrid Kaliane Neri Boa Morte|009.0261.2026.0025273-17|SAC|SSA x Fortaleza x SSA|GOL|07/05/2026|19/05/2026|22/05/2026|22222.14|CONSAD|
+61|Antoniel Pinheiro Barros|009.0277.2026.0026849-94|SGI|SSA x Fortaleza x SSA|GOL|07/05/2026|19/05/2026|22/05/2026|3456.68|CONSAD|
+62|Adriano Tambone e Michele Lopes de Castro|009.0218.2026.0025207-45|SRH|SSA x Fortaleza x SSA|GOL|08/05/2026|19/05/2026|22/05/2026|8558.74|CONSAD|
+63|Lucas Morais Moreira|009.0165.2026.0026133-81|CGR|SSA x Fortaleza x SSA|GOL|08/05/2026|19/05/2026|22/05/2026|4076.94|CONSAD|
+64|Hemerson Cardoso Guimarães|009.0204.2026.0027305-58|SUPAT|SSA x Fortaleza x SSA|GOL|08/05/2026|19/05/2026|22/05/2026|3740.23|CONSAD|
+65|Eliene Miranda Pessoa|009.0205.2026.0026744-42|SUPAT|SSA x Fortaleza x SSA|GOL|08/05/2026|19/05/2026|22/05/2026|3740.23|CONSAD|
+66|Maria do Rosário Costa Muricy|009.0241.2026.0025324-58|SUPREV|SSA x Fortaleza x SSA|GOL|11/05/2026|19/05/2026|22/05/2026|3743.54|CONSAD|
+67|Carla Farias Círiaco|009.2030.2026.0028109-83|PLANSERV|SSA x Barreiras x SSA|AZUL|11/05/2026|12/05/2026|14/05/2026|6616.30|Visita a Prestadores|
+68|Ernatan Waslancristian de Souza Barbosa|009.0207.2026.0028182-61|SRL|SSA x Fortaleza x SSA|AZUL / GOL|13/05/2026|19/05/2026|22/05/2026|3426.37|CONSAD|
+69|Paulo Emanuel Pimenta dos Santos|009.0159.2026.0029179-87|CCL|SSA x Fortaleza x SSA|LATAM|19/05/2026|26/08/2026|29/08/2026|1268.22|PrevNordeste|
+70|Juliana Rodrigues Carneiro Galvão e Mariza Oliveira Malta|009.0194.2026.0026979-19|SGI/DSG/CMPG|SSA x Brasília x SSA|LATAM / GOL|20/05/2026|08/06/2026|11/06/2026|3551.62|PARCOM 2026|
+71|Adriano Tambone e José Roberto da Silva Reis|009.0218.2026.0030271-39|SRH|SSA x São Paulo x SSA|LATAM|25/05/2026|27/05/2026|28/05/2026|5244.06|SAP Cloud|
+72|Thales José Costa de Almeida|009.0277.2026.0030295-66|SGI|SSA x São Paulo x SSA|LATAM|25/05/2026|27/05/2026|28/05/2026|2622.03|SAP Cloud|
+73|Danielle Thomaz Ferreira Cintra|009.0159.2026.0029179-87|GAB|SSA x Fortaleza x SSA|LATAM|27/05/2026|26/08/2026|29/08/2026|1206.28|PrevNordeste|
+74|David Santos Cruz Carvalho|009.0159.2026.0029179-87|PLANSERV|SSA x Fortaleza x SSA|GOL|28/05/2026|26/08/2026|28/08/2026|929.41|PrevNordeste|
+75|Pedro Anselmo Andrade Menezes|009.0159.2026.0029179-87|SUPREV|SSA x Fortaleza x SSA|LATAM|28/05/2026|26/08/2026|29/08/2026|1047.45|PrevNordeste|
+76|Mariana Barbosa Rache de Almeida|009.0159.2026.0029179-87|SGI|SSA x Fortaleza x SSA|GOL|28/05/2026|26/08/2026|30/08/2026|929.41|PrevNordeste|
+77|Rodrigo Pimentel de Souza Lima|009.0147.2026.0034591-67|GAB|SSA x Brasília x SSA|LATAM|29/05/2026|08/06/2026|09/06/2026|3326.74|CertForum-ID 2026|
+78|Thaís da Silva e Silva|009.0194.2026.0026979-19|SGI/DSG/CMPG|SSA x Brasília x SSA|LATAM / GOL|29/05/2026|08/06/2026|11/06/2026|2449.56|PARCOM 2026|
+79|Adriano Tambone e Robson Souza de Carvalho|009.0159.2026.0029179-87|SRH|SSA x Fortaleza x SSA|LATAM|29/05/2026|26/08/2026|30/08/2026|1675.00|PrevNordeste|
+80|Paulo Emanuel Pimenta dos Santos|009.0159.2026.0032530-71|CCL|SSA x Rio de Janeiro x SSA|LATAM / GOL|02/06/2026|08/06/2026|11/06/2026|3530.07|Web Summit Rio|
+81|Nilza de Carvalho Rios|009.0262.2026.0032636-98|SAC|SSA x Brasília x SSA|GOL / LATAM|02/06/2026|08/06/2026|10/06/2026|4906.38|CertForum ID|
+82|Geisiane Dias Magalhães, Ana Carolina de Brito Machado Ferraz, Márcio Serapião Batista, Cícera Glécia Alves da Silva e Ernatan Waslancristian de Souza Barbosa|009.0207.2026.0035477-75|SRL|SSA x Brasília x SSA|LATAM|16/06/2026|25/06/2026|26/06/2026|7246.85|Evento|
+83|Paulo Emanuel Pimenta dos Santos|009.0180.2026.0037920-14|CCL|SSA x São Paulo x SSA|GOL|29/06/2026|23/07/2026|24/07/2026|2028.29|Evento|
+84|Rodrigo Pimentel de Souza Lima|009.0147.2026.0040670-25|GAB|SSA x Teresina x SSA|LATAM|07/07/2026|05/08/2026|07/08/2026|1932.79|Consad Express|
+85|Igor Oliveira Takenami|009.0277.2026.0038788-90|SGI|SSA x Brasília x SSA|LATAM|10/07/2026|29/07/2026|31/07/2026|1413.06|CONEP 2026|
+86|Geisiane Dias Magalhães|009.0207.2026.0038503-62|SRL|SSA x São Paulo x SSA|GOL|10/07/2026|23/07/2026|24/07/2026|1567.29|Roadshow|
+87|Maria do Rosário Costa Muricy|009.0241.2026.0032621-87|SUPREV|SSA x Porto Alegre x SSA|LATAM / AZUL|14/07/2026|02/08/2026|05/08/2026|2887.76|CONAE / CONAPREV|
+88|Tayana Santana de Souza Moura|009.0207.2026.0041516-46|SRL|SSA x Teresina x SSA|LATAM|16/07/2026|05/08/2026|07/08/2026|2691.33|Consad Express|
+89|Igor Oliveira Takenami|009.0277.2026.0041718-46|SGI|SSA x Teresina x SSA|LATAM / AZUL|21/07/2026|05/08/2026|07/08/2026|3125.01|Consad Express|
+90|Eduardo Luiz da Conceição Pimenta|009.0241.2026.0032621-87|SUPREV|SSA x Porto Alegre x SSA|AZUL|24/07/2026|02/08/2026|05/08/2026|4753.10|CONAE / CONAPREV|
+91|Rodrigo Pimentel de Souza Lima|009.0147.2026.0040670-25|GAB|SSA x Teresina x SSA|LATAM|28/07/2026|05/08/2026|-|2161.77|Consad Express|
+92|Nilza de Carvalho Rios|009.0261.2026.0044268-95|SAC|SSA x Brasília x SSA|AZUL|29/07/2026|05/08/2026|07/08/2026|3998.62|SECOP 2026|
+93|Luiz Eduardo Perez e Larissa Guerra da Silva|009.2030.2026.0043642-39|PLANSERV|SSA x Brasília x SSA|LATAM|30/07/2026|04/08/2026|05/08/2026|8601.62|Evento|
+94|Rodrigo Pimentel de Souza Lima|009.0147.2026.0049915-80|GAB|SSA x São Paulo|GOL|18/08/2026|26/08/2026|-|2244.11|Evento|
+95|Rodrigo Pimentel de Souza Lima|009.0147.2026.0049915-80|GAB|São Paulo x SSA|GOL|19/08/2026|-|28/08/2026|2740.52|Evento|
+96|Maria Teresa Ramos da Silva|009.0240.2026.0046760-34|DDE|Rio de Janeiro x SSA|GOL|19/08/2026|-|25/08/2026|2707.50|Evento|
+97|Elianna Almeida Rebouças|009.0240.2026.0046760-34|DDE|SSA x Rio de Janeiro x SSA|LATAM|19/08/2026|24/08/2026|25/08/2026|4129.81|Evento|
+98|Adriano Tambone, Wilson José de Freitas Júnior e Marcos Tavares|009.0218.2026.0048565-62|SRH|SSA x São Paulo|GOL|19/08/2026|08/09/2025|-|5105.43|Evento|
+99|Robson Souza de Carvalho|009.0218.2026.0048565-62|SRH|SSA x São Paulo|GOL|19/08/2026|08/09/2025|-|1701.81|Evento|
+100|Adriano Tambone, Robson Souza de Carvalho, Wilson José de Freitas Júnior e Marcos Tavares|009.0218.2026.0048565-62|SRH|SSA x São Paulo x SSA|LATAM|19/08/2026|-|10/09/2026|5844.92|Evento|
+101|Rodrigo Pimentel de Souza Lima|009.0147.2026.0049915-80|GAB|SSA x São Paulo|LATAM|21/08/2026|08/09/2026|-|2006.52|Evento|
+102|Rodrigo Pimentel de Souza Lima|009.0147.2026.0049915-80|GAB|São Paulo x SSA|LATAM|21/08/2026|-|10/09/2026|2049.73|Evento|
+103|Thales José Costa de Almeida e Anderson Vasconcelos Prazeres|009.0277.2026.0049418-97|SGI|SSA x São Paulo|GOL|24/08/2026|08/09/2026|-|2836.58|Evento|
+104|Thales José Costa de Almeida e Anderson Vasconcelos Prazeres|009.0277.2026.0049418-97|SGI|São Paulo x SSA|GOL|24/08/2026|-|10/09/2026|1439.40|Evento|
+105|Larissa Guerra da Silva|009.2030.2026.0048968-34|PLANSERV|SSA x São Paulo x SSA|GOL / LATAM|27/08/2026|02/09/2026|03/09/2026|2441.13|Evento|Cancelada
+106|Rodrigo Pimentel de Souza Lima|009.0147.2026.0049915-80|GAB|São Paulo x SSA|LATAM|02/09/2026|-|09/09/2026|1232.43|Evento|
+107|Thales José Costa de Almeida|009.0277.2026.0050388-99|SGI|SSA x San Francisco|GOL / American Airlines|03/09/2026|12/09/2026|-|4987.33|Evento|Viagem Internacional
+108|Thales José Costa de Almeida|009.0277.2026.0050388-99|SGI|San Francisco x SSA|COPA|03/09/2026|-|18/09/2026|7955.91|Evento|Viagem Internacional
+109|Luciana Andrade Quixadá Nou, Manoela de Fatima da Costa Souza e Katia Sepulveda Fonseca|009.0187.2026.0051263-31|CCL|SSA x Brasília x SSA|LATAM|03/09/2026|20/09/2026|24/09/2026|6329.64|Encontro|
+110|Thales José Costa de Almeida|009.0277.2026.0050388-99|SGI|SSA x San Francisco|GRUPO BRT|09/09/2026|12/09/2026|19/09/2026|345.79|Evento|Seguro
+111|Jeferson Guimarães de Jesus|009.2030.2026.0053158-27|PLANSERV|SSA x Porto Seguro x SSA|GOL|09/09/2026|10/09/2026|12/09/2026|3923.68|Visita|
+112|Rodrigo Pimentel de Souza Lima|009.0147.2026.0049915-80|GAB|São Paulo x SSA|LATAM|10/09/2026|-|11/09/2026|1423.83|Evento|
+113|Thales José Costa de Almeida e Igor Oliveira Takenami|009.0277.2026.0052974-87|SGI|SSA x São Paulo x SSA|GOL|17/09/2026|21/09/2026|23/09/2026|4596.96|Conferência|
+114|Igor Oliveira Takenami|009.0277.2026.0053462-83|SGI|SSA x Washington x SSA|GOL / United|14/10/2026|01/11/2026|05/11/2026|8890.67|Advance Gov 2026|Viagem Internacional
+115|Thales José Costa de Almeida|009.0277.2026.0059944-47|SGI|SSA x São Paulo x SSA|GOL|16/10/2026|20/10/2026|21/10/2026|2805.18|Congresso|
+116|Igor Oliveira Takenami|009.0277.2026.0053462-83|SGI|SSA x Washington x SSA|GRUPO BRT|16/10/2026|01/11/2026|05/11/2026|406.63|Advance Gov 2026|Seguro
+117|Victor Emmanuel Maia Fonseca|009.21765.2026.0060946-10|ASS Especial|SSA x Rio de Janeiro x SSA|GOL|19/10/2026|08/11/2026|13/11/2026|2474.26|Capacitação|
+118|Maria do Rosário Costa Muricy|009.0255.2026.0058188-97|SUPREV|SSA x Vitória/ES x SSA|LATAM|19/10/2026|03/11/2026|06/11/2026|2356.15|Eventos|
+119|Rodrigo Pimentel de Souza Lima|009.0655.2026.0056783-11|GAB|São Paulo x PEQUIM|EMIRATES|22/10/2026|14/11/2026|-|52621.21|CONSAD|Viagem Internacional
+120|Rodrigo Pimentel de Souza Lima|009.0655.2026.0056783-11|GAB|SSA x São Paulo|LATAM|22/10/2026|13/11/2026|-|2517.03|CONSAD|
+`;
+
+const VN_DATA = VN_RAW.trim().split('\n').map(line => {
+  const c = line.split('|');
+  return {
+    n: +c[0], servidor: c[1], processo: c[2], setor: c[3], destino: c[4],
+    cia: c[5], compra: c[6], ida: c[7], volta: c[8],
+    valor: parseFloat(c[9]) || 0, motivo: c[10] || '', obs: c[11] || ''
+  };
+});
+
+/* ============================================================
+   UTILITÁRIOS
+   ============================================================ */
+const fmtBRL = v => (v || 0).toLocaleString('pt-BR', { style:'currency', currency:'BRL' });
+const esc = s => String(s == null ? '' : s)
+  .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+
+function dataBR(iso){
+  if(!iso) return '—';
+  if(/^\d{2}\/\d{2}\/\d{4}$/.test(iso)) return iso;
+  const p = iso.split('T')[0].split('-');
+  if(p.length === 3) return `${p[2]}/${p[1]}/${p[0]}`;
+  return iso;
+}
+
+function toast(msg, tipo){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast show ' + (tipo || '');
+  clearTimeout(t._timer);
+  t._timer = setTimeout(() => t.classList.remove('show'), 3200);
+}
+
+/* ============================================================
+   VALIDADE DO CRÉDITO — 1 ano a partir da DATA DA COMPRA
+   ============================================================ */
+function calcValidadeCredito(p){
+  // Base = data da compra (obrigatória). Fallback para canceladaEm (legado).
+  const base = p.dataCompra || (p.canceladaEm ? p.canceladaEm.split('T')[0] : null);
+  if(!base) return null;
+  const d = new Date(base + 'T12:00:00');
+  if(isNaN(d.getTime())) return null;
+  const v = new Date(d);
+  v.setFullYear(v.getFullYear() + 1);
+  return v;
+}
+
+function statusCredito(validade){
+  if(!validade) return { status:'—', classe:'', dias:0 };
+  const hoje = new Date();
+  const dias = Math.ceil((validade - hoje) / (1000*60*60*24));
+  if(dias < 0) return { status:'Expirado', classe:'red', dias };
+  if(dias <= 30) return { status:'Expirando', classe:'gold', dias };
+  return { status:'Vigente', classe:'green', dias };
+}
+
+/* ============================================================
+   ARMAZENAMENTO
+   ============================================================ */
+let passagensAires = [];
+let faturasAires   = [];
+let modoCancelada  = false;
+
+function carregarDados(){
+  try{ passagensAires = JSON.parse(localStorage.getItem(KEY_PASSAGENS)) || []; }catch(e){ passagensAires = []; }
+  try{ faturasAires   = JSON.parse(localStorage.getItem(KEY_FATURAS))   || []; }catch(e){ faturasAires = []; }
+}
+function salvarPassagens(){ localStorage.setItem(KEY_PASSAGENS, JSON.stringify(passagensAires)); }
+function salvarFaturas(){ localStorage.setItem(KEY_FATURAS, JSON.stringify(faturasAires)); }
+
+/* ============================================================
+   NAVEGAÇÃO
+   ============================================================ */
+function irParaTab(tabId){
+  document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  const navBtn = document.querySelector(`.nav-item[data-tab="${tabId}"]`);
+  const panel  = document.getElementById('tab-' + tabId);
+  if(navBtn) navBtn.classList.add('active');
+  if(panel)  panel.classList.add('active');
+  document.getElementById('sidebar').classList.remove('open');
+  window.scrollTo({ top:0, behavior:'smooth' });
+}
+document.querySelectorAll('.nav-item').forEach(btn => {
+  btn.addEventListener('click', () => irParaTab(btn.dataset.tab));
+});
+document.addEventListener('click', e => {
+  const goCard = e.target.closest('.card[data-go]');
+  if(goCard){ irParaTab(goCard.dataset.go); return; }
+
+  const modalCard = e.target.closest('.card[data-modal], .sidebar-cancel-info');
+  if(modalCard){
+    if(modalCard.dataset.modal === 'modalCancelamentos' || modalCard.id === 'sidebarCancelInfo'){
+      renderModalCancelamentos();
+      abrirModal('modalCancelamentos');
+    }
+    return;
+  }
+});
+document.getElementById('menuBtn').addEventListener('click', () => {
+  document.getElementById('sidebar').classList.toggle('open');
+});
+
+/* ============================================================
+   MODAIS
+   ============================================================ */
+function abrirModal(id){ document.getElementById(id).classList.add('open'); }
+function fecharModal(id){ document.getElementById(id).classList.remove('open'); }
+document.querySelectorAll('[data-close]').forEach(el => {
+  el.addEventListener('click', () => fecharModal(el.dataset.close));
+});
+document.querySelectorAll('.modal').forEach(m => {
+  m.addEventListener('click', e => { if(e.target === m) m.classList.remove('open'); });
+});
+document.addEventListener('keydown', e => {
+  if(e.key === 'Escape') document.querySelectorAll('.modal.open').forEach(m => m.classList.remove('open'));
+});
+document.getElementById('btnIrCanceladas').addEventListener('click', () => {
+  fecharModal('modalCancelamentos');
+  irParaTab('canceladas');
+});
+
+/* ============================================================
+   SENHA
+   ============================================================ */
+let acaoPendente = null;
+const senhaInput = document.getElementById('senhaInput');
+const senhaErro  = document.getElementById('senhaErro');
+
+function pedirSenha(callback){
+  acaoPendente = callback;
+  senhaInput.value = '';
+  senhaErro.textContent = '';
+  abrirModal('modalSenha');
+  setTimeout(() => senhaInput.focus(), 120);
+}
+function confirmarSenha(){
+  if(senhaInput.value === SENHA){
+    fecharModal('modalSenha');
+    const acao = acaoPendente;
+    acaoPendente = null;
+    if(acao) acao();
+  } else {
+    senhaErro.textContent = 'Senha incorreta. Tente novamente.';
+    senhaInput.value = '';
+    senhaInput.focus();
+  }
+}
+document.getElementById('btnConfirmarSenha').addEventListener('click', confirmarSenha);
+senhaInput.addEventListener('keydown', e => { if(e.key === 'Enter'){ e.preventDefault(); confirmarSenha(); } });
+
+/* ============================================================
+   DASHBOARD — TODAS as passagens contam para o consumo
+   ============================================================ */
+function renderDashboard(){
+  const total = passagensAires.reduce((s,p) => s + (p.valor || 0), 0);
+  const saldo = Math.max(0, VALOR_CONTRATO_AIRES - total);
+  const pct   = Math.min(100, (total / VALOR_CONTRATO_AIRES) * 100);
+
+  const ativas     = passagensAires.filter(p => p.status !== 'cancelada');
+  const canceladas = passagensAires.filter(p => p.status === 'cancelada');
+  const totalCanc  = canceladas.reduce((s,p) => s + (p.valor || 0), 0);
+
+  document.getElementById('dashAiresCards').innerHTML = `
+    <div class="card" data-go="aires">
+      <div class="lbl">Valor do contrato</div>
+      <div class="val">${fmtBRL(VALOR_CONTRATO_AIRES)}</div>
+      <div class="sub">Vigência 03/11/2026 a 02/11/2027</div>
+    </div>
+    <div class="card gold" data-go="aires">
+      <div class="lbl">Total utilizado</div>
+      <div class="val">${fmtBRL(total)}</div>
+      <div class="sub">${ativas.length} ativa(s) · ${canceladas.length} cancelada(s) — todas contam</div>
+    </div>
+    <div class="card ${pct >= 85 ? 'red' : (pct >= 60 ? 'gold' : 'green')}" data-go="aires">
+      <div class="lbl">Saldo disponível</div>
+      <div class="val">${fmtBRL(saldo)}</div>
+      <div class="sub">${pct.toFixed(1).replace('.',',')}% consumido</div>
+    </div>
+    <div class="card" data-go="aires">
+      <div class="lbl">Média por passagem</div>
+      <div class="val">${fmtBRL(passagensAires.length ? total / passagensAires.length : 0)}</div>
+      <div class="sub">Ticket médio geral</div>
+    </div>
+    <div class="card red" data-modal="modalCancelamentos">
+      <div class="lbl">Canceladas</div>
+      <div class="val">${canceladas.length}</div>
+      <div class="sub">${fmtBRL(totalCanc)} em créditos · clique p/ detalhes</div>
+    </div>
+  `;
+
+  const barFill = document.getElementById('barFill');
+  const barPct  = document.getElementById('barPct');
+  if(barFill) barFill.style.setProperty('--p', pct.toFixed(2) + '%');
+  if(barPct) barPct.textContent = pct.toFixed(1).replace('.', ',') + '%';
+
+  renderEstimativa(total, saldo);
+}
+
+/* ============================================================
+   ESTIMATIVA
+   ============================================================ */
+function renderEstimativa(total, saldo){
+  const estGrid = document.getElementById('estGrid');
+  const verBox  = document.getElementById('vereditoBox');
+
+  const hoje = new Date();
+  const ref  = hoje > INICIO_CONTRATO ? hoje : new Date(INICIO_CONTRATO);
+  const MS_DIA = 86400000;
+
+  const diasCorridos   = Math.max(30, (ref - INICIO_CONTRATO) / MS_DIA);
+  const mesesCorridos  = diasCorridos / 30.44;
+  const mesesRestantes = Math.max(0, (FIM_CONTRATO - ref) / MS_DIA / 30.44);
+
+  const consumoMensal = total > 0 ? total / mesesCorridos : 0;
+  const duracaoMeses  = consumoMensal > 0 ? saldo / consumoMensal : Infinity;
+
+  const fmtMeses = m => {
+    if(!isFinite(m)) return '∞';
+    if(m >= 24) return '+24 meses';
+    const inteiro = Math.floor(m);
+    const dias = Math.round((m - inteiro) * 30);
+    return `${inteiro}m${dias > 0 ? ' e ' + dias + 'd' : ''}`;
+  };
+
+  estGrid.innerHTML = `
+    <div class="est-item">
+      <div class="l">Consumo médio mensal</div>
+      <div class="v">${fmtBRL(consumoMensal)}</div>
+    </div>
+    <div class="est-item">
+      <div class="l">Saldo restante</div>
+      <div class="v">${fmtBRL(saldo)}</div>
+    </div>
+    <div class="est-item">
+      <div class="l">Duração estimada do saldo</div>
+      <div class="v">${total > 0 ? fmtMeses(duracaoMeses) : '—'}</div>
+    </div>
+    <div class="est-item">
+      <div class="l">Meses restantes de contrato</div>
+      <div class="v">${mesesRestantes.toFixed(1).replace('.', ',')} meses</div>
+    </div>
+  `;
+
+  if(total === 0){
+    verBox.innerHTML = `<div class="veredito neutro">
+      <div class="ico">i</div>
+      <div>Nenhuma passagem registrada até o momento. Assim que a primeira passagem for lançada,
+      o sistema calculará automaticamente o ritmo de consumo e a projeção de duração do saldo contratual.</div>
+    </div>`;
+    return;
+  }
+  if(saldo <= 0){
+    verBox.innerHTML = `<div class="veredito warn">
+      <div class="ico">!</div>
+      <div><strong>Saldo contratual esgotado.</strong> O valor de ${fmtBRL(VALOR_CONTRATO_AIRES)}
+      já foi totalmente comprometido (passagens ativas + canceladas). É necessário aditivo contratual
+      ou novo processo licitatório.</div>
+    </div>`;
+    return;
+  }
+  if(duracaoMeses >= mesesRestantes){
+    verBox.innerHTML = `<div class="veredito ok">
+      <div class="ico">✓</div>
+      <div><strong>O saldo tende a durar até o fim do contrato.</strong>
+      No ritmo atual de ${fmtBRL(consumoMensal)}/mês (incluindo canceladas), o saldo restante cobre
+      aproximadamente <strong>${fmtMeses(duracaoMeses)}</strong>, enquanto restam
+      <strong>${mesesRestantes.toFixed(1).replace('.', ',')} meses</strong> de vigência
+      (término em 02/11/2027).</div>
+    </div>`;
+  } else {
+    const faltaMeses = (mesesRestantes - duracaoMeses).toFixed(1).replace('.', ',');
+    verBox.innerHTML = `<div class="veredito warn">
+      <div class="ico">!</div>
+      <div><strong>Atenção: risco de esgotamento antecipado do saldo.</strong>
+      No ritmo atual de ${fmtBRL(consumoMensal)}/mês (incluindo canceladas), o saldo restante cobre
+      apenas <strong>${fmtMeses(duracaoMeses)}</strong>, mas ainda restam
+      <strong>${mesesRestantes.toFixed(1).replace('.', ',')} meses</strong> de contrato.
+      Há uma lacuna estimada de <strong>${faltaMeses} meses</strong> sem cobertura contratual.</div>
+    </div>`;
+  }
+}
+
+/* ============================================================
+   RODAPÉ — info de canceladas
+   ============================================================ */
+function renderSidebarCancelInfo(){
+  const box = document.getElementById('sidebarCancelInfo');
+  const canceladas = passagensAires.filter(p => p.status === 'cancelada');
+
+  if(!canceladas.length){
+    box.innerHTML = `
+      <div class="tit">Passagens Canceladas</div>
+      <div class="empty-msg">Nenhum crédito ativo no momento.</div>
+    `;
+    return;
+  }
+
+  let totalVig = 0, nVig = 0, nExpirando = 0, nExpirado = 0;
+  canceladas.forEach(p => {
+    const val = calcValidadeCredito(p);
+    const st  = statusCredito(val);
+    if(st.status === 'Expirado'){
+      nExpirado++;
+    } else {
+      totalVig += p.valor || 0;
+      nVig++;
+      if(st.status === 'Expirando') nExpirando++;
+    }
+  });
+
+  box.innerHTML = `
+    <div class="tit">Passagens Canceladas</div>
+    <div class="row"><span>Créditos vigentes</span><strong>${nVig}</strong></div>
+    <div class="row"><span>Valor disponível</span><strong>${fmtBRL(totalVig)}</strong></div>
+    ${nExpirado > 0 ? `<div class="row" style="opacity:.7"><span>Expirados</span><strong>${nExpirado}</strong></div>` : ''}
+    ${nExpirando > 0 ? `<div class="alert">⚠ ${nExpirando} expirando em ≤30 dias</div>` : ''}
+  `;
+}
+
+/* ============================================================
+   VN SOARES
+   ============================================================ */
+function renderVN(){
+  const q = (document.getElementById('vnBusca').value || '').toLowerCase().trim();
+  const total = VN_DATA.reduce((s,r) => s + r.valor, 0);
+  const contratual = 600000;
+  const saldo = contratual - total;
+  const internacionais = VN_DATA.filter(r => /internacional/i.test(r.obs)).length;
+
+  document.getElementById('vnCards').innerHTML = `
+    <div class="card" data-go="dashboard">
+      <div class="lbl">Valor contratual anual</div>
+      <div class="val">${fmtBRL(contratual)}</div>
+      <div class="sub">Contrato 22/10/2025 a 21/10/2026</div>
+    </div>
+    <div class="card gold" data-go="dashboard">
+      <div class="lbl">Total utilizado</div>
+      <div class="val">${fmtBRL(total)}</div>
+      <div class="sub">${VN_DATA.length} registros de viagem</div>
+    </div>
+    <div class="card ${saldo < contratual*0.15 ? 'red' : 'green'}" data-go="dashboard">
+      <div class="lbl">Saldo disponível</div>
+      <div class="val">${fmtBRL(saldo)}</div>
+      <div class="sub">${((total/contratual)*100).toFixed(1).replace('.',',')}% consumido</div>
+    </div>
+    <div class="card" data-go="vn">
+      <div class="lbl">Viagens internacionais</div>
+      <div class="val">${internacionais}</div>
+      <div class="sub">Registros com passagem internacional</div>
+    </div>
+  `;
+
+  const filtrados = VN_DATA.filter(r => {
+    if(!q) return true;
+    return (r.servidor + ' ' + r.processo + ' ' + r.setor + ' ' + r.destino + ' ' +
+            r.motivo + ' ' + r.obs + ' ' + r.cia).toLowerCase().includes(q);
+  });
+
+  const tbody = document.getElementById('vnTbody');
+  if(!filtrados.length){
+    tbody.innerHTML = `<tr><td colspan="12"><div class="empty"><strong>Nenhum resultado</strong>Tente outro termo de busca.</div></td></tr>`;
+    return;
+  }
+
+  tbody.innerHTML = filtrados.map(r => `
+    <tr>
+      <td>${r.n}</td>
+      <td class="td-nome">${esc(r.servidor)}</td>
+      <td>${esc(r.processo)}</td>
+      <td><span class="chip">${esc(r.setor)}</span></td>
+      <td class="wrap">${esc(r.destino)}</td>
+      <td>${esc(r.cia)}</td>
+      <td>${esc(r.compra)}</td>
+      <td>${esc(r.ida)}</td>
+      <td>${esc(r.volta)}</td>
+      <td class="num">${fmtBRL(r.valor)}</td>
+      <td class="wrap">${esc(r.motivo)}</td>
+      <td class="wrap" style="font-size:11.5px;color:var(--cinza)">
+        ${esc(r.obs)}
+        ${/internacional/i.test(r.obs) ? '<span class="chip gold">Internacional</span>' : ''}
+        ${/cancel/i.test(r.obs) ? '<span class="chip red">Cancelada</span>' : ''}
+      </td>
+    </tr>
+  `).join('');
+}
+document.getElementById('vnBusca').addEventListener('input', renderVN);
+
+/* ============================================================
+   AIRES — PASSAGENS
+   ============================================================ */
+function renderAires(){
+  const ativas = passagensAires.filter(p => p.status !== 'cancelada');
+  const totalAtivas = ativas.reduce((s,p) => s + (p.valor || 0), 0);
+  const totalGeral  = passagensAires.reduce((s,p) => s + (p.valor || 0), 0);
+
+  document.getElementById('airesCards').innerHTML = `
+    <div class="card" data-go="dashboard">
+      <div class="lbl">Média por passagem ativa</div>
+      <div class="val">${fmtBRL(ativas.length ? totalAtivas / ativas.length : 0)}</div>
+      <div class="sub">${ativas.length} ativa(s) · ticket médio das ativas</div>
+    </div>
+    <div class="card gold" data-go="dashboard">
+      <div class="lbl">Comprometido no contrato</div>
+      <div class="val">${fmtBRL(totalGeral)}</div>
+      <div class="sub">Ativas + canceladas (todas contam)</div>
+    </div>
+  `;
+
+  const tbody = document.getElementById('airesTbody');
+  if(!ativas.length){
+    tbody.innerHTML = `<tr><td colspan="14"><div class="empty">
+      <strong>Nenhuma passagem ativa registrada</strong>
+      Clique em "Adicionar nova passagem" para começar.
+    </div></td></tr>`;
+  } else {
+    tbody.innerHTML = ativas.slice().reverse().map(p => `
+      <tr>
+        <td class="td-nome">${esc(p.nome)}</td>
+        <td>${esc(p.processo) || '—'}</td>
+        <td>${p.setor ? `<span class="chip">${esc(p.setor)}</span>` : '—'}</td>
+        <td class="wrap">${esc(p.partida)} → ${esc(p.chegada)}</td>
+        <td>${dataBR(p.ida)}</td>
+        <td>${dataBR(p.volta)}</td>
+        <td>${esc(p.cia) || '—'}</td>
+        <td style="font-family:ui-monospace,monospace;font-weight:600;color:var(--azul-med);letter-spacing:.5px">
+          ${esc(p.localizador) || '—'}
+        </td>
+        <td style="font-family:ui-monospace,monospace;font-size:11.5px">${esc(p.bilhete) || '—'}</td>
+        <td>${p.dataCompra ? dataBR(p.dataCompra) : '—'}</td>
+        <td class="num">${fmtBRL(p.valor)}</td>
+        <td class="wrap">${esc(p.motivo) || '—'}</td>
+        <td class="wrap" style="font-size:11.5px;color:var(--cinza)">${esc(p.obs) || '—'}</td>
+        <td style="white-space:nowrap;text-align:center">
+          <button class="btn btn-ghost btn-sm" data-editar="${p.id}">Editar</button>
+          <button class="btn btn-danger btn-sm" data-cancelar="${p.id}" style="margin-left:4px">Cancelar</button>
+        </td>
+      </tr>
+    `).join('');
+  }
+}
+
+/* ============================================================
+   MODAL PASSAGEM
+   ============================================================ */
+let editandoId = null;
+
+function limparFormPassagem(){
+  document.getElementById('formPassagem').reset();
+  editandoId = null;
+  modoCancelada = false;
+  document.getElementById('fieldCancelamento').style.display = 'none';
+  document.getElementById('hintDataCompra').style.display = 'none';
+  document.getElementById('fDataCancelamento').required = false;
+}
+
+document.getElementById('btnNovaPassagem').addEventListener('click', () => {
+  limparFormPassagem();
+  modoCancelada = false;
+  document.getElementById('modalPassagemTitulo').textContent = 'Adicionar nova passagem';
+  document.getElementById('modalPassagemSub').textContent = 'Contrato Aires · preencha os dados da passagem aérea';
+  document.getElementById('fieldCancelamento').style.display = 'none';
+  document.getElementById('hintDataCompra').style.display = 'none';
+  document.getElementById('fDataCancelamento').required = false;
+  abrirModal('modalPassagem');
+});
+
+document.getElementById('btnNovaCancelada').addEventListener('click', () => {
+  limparFormPassagem();
+  modoCancelada = true;
+  document.getElementById('modalPassagemTitulo').textContent = 'Adicionar passagem cancelada';
+  document.getElementById('modalPassagemSub').textContent = 'O valor já foi descontado do contrato · crédito válido por 1 ano a partir da compra';
+  document.getElementById('fieldCancelamento').style.display = '';
+  document.getElementById('hintDataCompra').style.display = '';
+  document.getElementById('fDataCancelamento').required = false;
+  document.getElementById('fDataCancelamento').value = new Date().toISOString().split('T')[0];
+  abrirModal('modalPassagem');
+});
+
+function abrirEdicao(id){
+  const p = passagensAires.find(x => x.id === id);
+  if(!p) return;
+
+  editandoId = id;
+  modoCancelada = p.status === 'cancelada';
+
+  document.getElementById('modalPassagemTitulo').textContent =
+    modoCancelada ? 'Editar passagem cancelada' : 'Editar passagem';
+  document.getElementById('modalPassagemSub').textContent =
+    modoCancelada
+      ? 'O crédito vale 1 ano a partir da data da compra'
+      : 'Contrato Aires · edição de passagem ativa';
+
+  document.getElementById('fNome').value         = p.nome || '';
+  document.getElementById('fProcesso').value     = p.processo || '';
+  document.getElementById('fSetor').value        = p.setor || '';
+  document.getElementById('fPartida').value      = p.partida || '';
+  document.getElementById('fChegada').value      = p.chegada || '';
+  document.getElementById('fIda').value          = p.ida || '';
+  document.getElementById('fVolta').value        = p.volta || '';
+  document.getElementById('fCia').value          = p.cia || '';
+  document.getElementById('fValor').value        = p.valor || '';
+  document.getElementById('fLocalizador').value  = p.localizador || '';
+  document.getElementById('fBilhete').value      = p.bilhete || '';
+  document.getElementById('fDataCompra').value   = p.dataCompra || '';
+  document.getElementById('fMotivo').value       = p.motivo || '';
+  document.getElementById('fObs').value          = p.obs || '';
+
+  const fieldCanc = document.getElementById('fieldCancelamento');
+  const inputCanc = document.getElementById('fDataCancelamento');
+  const hintCompra = document.getElementById('hintDataCompra');
+  if(modoCancelada){
+    fieldCanc.style.display = '';
+    hintCompra.style.display = '';
+    inputCanc.required = false;
+    inputCanc.value = p.canceladaEm ? p.canceladaEm.split('T')[0] : '';
+  } else {
+    fieldCanc.style.display = 'none';
+    hintCompra.style.display = 'none';
+    inputCanc.required = false;
+    inputCanc.value = '';
+  }
+
+  abrirModal('modalPassagem');
+}
+
+document.getElementById('fLocalizador').addEventListener('input', e => {
+  e.target.value = e.target.value.toUpperCase().replace(/[^A-Za-z]/g,'');
+});
+document.getElementById('fBilhete').addEventListener('input', e => {
+  e.target.value = e.target.value.replace(/\D/g,'');
+});
+
+document.getElementById('formPassagem').addEventListener('submit', e => {
+  e.preventDefault();
+
+  const dados = {
+    id: editandoId || ('p' + Date.now()),
+    nome:         document.getElementById('fNome').value.trim(),
+    processo:     document.getElementById('fProcesso').value.trim(),
+    setor:        document.getElementById('fSetor').value.trim(),
+    partida:      document.getElementById('fPartida').value.trim(),
+    chegada:      document.getElementById('fChegada').value.trim(),
+    ida:          document.getElementById('fIda').value,
+    volta:        document.getElementById('fVolta').value,
+    cia:          document.getElementById('fCia').value.trim(),
+    valor:        parseFloat(document.getElementById('fValor').value) || 0,
+    localizador:  document.getElementById('fLocalizador').value.trim().toUpperCase(),
+    bilhete:      document.getElementById('fBilhete').value.trim(),
+    dataCompra:   document.getElementById('fDataCompra').value,
+    motivo:       document.getElementById('fMotivo').value.trim(),
+    obs:          document.getElementById('fObs').value.trim(),
+  };
+
+  if(modoCancelada){
+    dados.status = 'cancelada';
+    const dataCanc = document.getElementById('fDataCancelamento').value;
+    dados.canceladaEm = dataCanc
+      ? new Date(dataCanc + 'T12:00:00').toISOString()
+      : new Date().toISOString();
+  } else {
+    dados.status = 'ativa';
+  }
+
+  if(editandoId){
+    const idx = passagensAires.findIndex(x => x.id === editandoId);
+    if(idx > -1) passagensAires[idx] = dados;
+    toast('Passagem atualizada com sucesso!', 'ok');
+  } else {
+    passagensAires.push(dados);
+    toast(modoCancelada ? 'Passagem cancelada registrada!' : 'Passagem registrada com sucesso!', 'ok');
+  }
+
+  salvarPassagens();
+  fecharModal('modalPassagem');
+  limparFormPassagem();
+  renderAll();
+});
+
+document.getElementById('airesTbody').addEventListener('click', e => {
+  const btnEdit = e.target.closest('[data-editar]');
+  const btnCanc = e.target.closest('[data-cancelar]');
+
+  if(btnEdit){
+    const id = btnEdit.dataset.editar;
+    pedirSenha(() => abrirEdicao(id));
+  }
+  if(btnCanc){
+    const id = btnCanc.dataset.cancelar;
+    pedirSenha(() => {
+      const idx = passagensAires.findIndex(x => x.id === id);
+      if(idx > -1){
+        passagensAires[idx].status = 'cancelada';
+        // preserva dataCompra; se não existir, usa hoje
+        if(!passagensAires[idx].dataCompra){
+          passagensAires[idx].dataCompra = new Date().toISOString().split('T')[0];
+        }
+        passagensAires[idx].canceladaEm = new Date().toISOString();
+        salvarPassagens();
+        renderAll();
+        toast('Passagem cancelada. Crédito válido por 1 ano a partir da compra.', 'err');
+      }
+    });
+  }
+});
+
+/* ============================================================
+   CANCELADAS — TABELA
+   ============================================================ */
+function renderCanceladas(){
+  const canceladas = passagensAires.filter(p => p.status === 'cancelada');
+  const totalCanc  = canceladas.reduce((s,p) => s + (p.valor || 0), 0);
+  const totalGeral = passagensAires.reduce((s,p) => s + (p.valor || 0), 0);
+
+  let vigentes = 0, expirando = 0, expirados = 0;
+  canceladas.forEach(p => {
+    const v = calcValidadeCredito(p);
+    const st = statusCredito(v);
+    if(st.status === 'Expirado') expirados++;
+    else if(st.status === 'Expirando') expirando++;
+    else if(st.status === 'Vigente') vigentes++;
+  });
+
+  document.getElementById('cancelCards').innerHTML = `
+    <div class="card red" data-modal="modalCancelamentos">
+      <div class="lbl">Passagens canceladas</div>
+      <div class="val">${canceladas.length}</div>
+      <div class="sub">${fmtBRL(totalCanc)} em créditos</div>
+    </div>
+    <div class="card green" data-go="dashboard">
+      <div class="lbl">Créditos vigentes</div>
+      <div class="val">${vigentes}</div>
+      <div class="sub">Válidos por 1 ano da compra</div>
+    </div>
+    <div class="card gold" data-modal="modalCancelamentos">
+      <div class="lbl">Expirando (≤30 dias)</div>
+      <div class="val">${expirando}</div>
+      <div class="sub">Atenção ao prazo</div>
+    </div>
+    <div class="card red" data-modal="modalCancelamentos">
+      <div class="lbl">Expirados</div>
+      <div class="val">${expirados}</div>
+      <div class="sub">Fora do prazo de uso</div>
+    </div>
+    <div class="card" data-go="dashboard" style="border-left-color:var(--azul-med)">
+      <div class="lbl">Já descontado do contrato</div>
+      <div class="val">${fmtBRL(totalGeral)}</div>
+      <div class="sub">Ativas + canceladas</div>
+    </div>
+  `;
+
+  const tbody = document.getElementById('cancelTbody');
+  if(!canceladas.length){
+    tbody.innerHTML = `<tr><td colspan="10"><div class="empty">
+      <strong>Nenhuma passagem cancelada</strong>
+      As passagens canceladas aparecerão aqui. O crédito vale 1 ano da data da compra.
+    </div></td></tr>`;
+    return;
+  }
+
+  tbody.innerHTML = canceladas.slice().reverse().map(p => {
+    const val = calcValidadeCredito(p);
+    const st  = statusCredito(val);
+    return `
+      <tr>
+        <td class="td-nome">${esc(p.nome)}</td>
+        <td>${esc(p.processo) || '—'}</td>
+        <td>${p.setor ? `<span class="chip">${esc(p.setor)}</span>` : '—'}</td>
+        <td class="wrap">${esc(p.partida)} → ${esc(p.chegada)}</td>
+        <td>${p.dataCompra ? dataBR(p.dataCompra) : '—'}</td>
+        <td>${p.canceladaEm ? dataBR(p.canceladaEm) : '—'}</td>
+        <td class="num" style="color:var(--vermelho)">${fmtBRL(p.valor)}</td>
+        <td class="wrap">${esc(p.motivo) || '—'}</td>
+        <td>
+          ${val ? `${dataBR(val.toISOString())}<br><span class="chip ${st.classe}">${st.status}${st.dias >= 0 ? ' · ' + st.dias + 'd' : ''}</span>` : '—'}
+        </td>
+        <td style="white-space:nowrap;text-align:center">
+          <button class="btn btn-ghost btn-sm" data-editar-canc="${p.id}">Editar</button>
+          <button class="btn btn-danger btn-sm" data-reativar="${p.id}" style="margin-left:4px">Reativar</button>
+        </td>
+      </tr>
+    `;
+  }).join('');
+}
+
+document.getElementById('cancelTbody').addEventListener('click', e => {
+  const btnEdit = e.target.closest('[data-editar-canc]');
+  const btnReat = e.target.closest('[data-reativar]');
+
+  if(btnEdit){
+    const id = btnEdit.dataset.editarCanc;
+    pedirSenha(() => abrirEdicao(id));
+  }
+  if(btnReat){
+    const id = btnReat.dataset.reativar;
+    pedirSenha(() => {
+      const idx = passagensAires.findIndex(x => x.id === id);
+      if(idx > -1){
+        passagensAires[idx].status = 'ativa';
+        delete passagensAires[idx].canceladaEm;
+        salvarPassagens();
+        renderAll();
+        toast('Passagem reativada com sucesso!', 'ok');
+      }
+    });
+  }
+});
+
+/* ============================================================
+   MODAL DE CANCELAMENTOS (Dashboard)
+   ============================================================ */
+function renderModalCancelamentos(){
+  const canceladas = passagensAires.filter(p => p.status === 'cancelada');
+
+  const enriched = canceladas.map(p => {
+    const val = calcValidadeCredito(p);
+    const st  = statusCredito(val);
+    return { ...p, validade: val, statusCred: st };
+  }).sort((a,b) => {
+    const ordem = { 'Vigente':0, 'Expirando':1, 'Expirado':2, '—':3 };
+    return (ordem[a.statusCred.status] - ordem[b.statusCred.status]) ||
+           ((b.valor||0) - (a.valor||0));
+  });
+
+  let totalVigente = 0, totalExpirado = 0, nVig = 0, nExp = 0;
+  enriched.forEach(p => {
+    if(p.statusCred.status === 'Expirado'){
+      totalExpirado += p.valor || 0;
+    } else {
+      totalVigente += p.valor || 0;
+      nVig++;
+    }
+    if(p.statusCred.status === 'Expirando') nExp++;
+  });
+
+  document.getElementById('cancelSummary').innerHTML = `
+    <div class="card green">
+      <div class="lbl">Crédito vigente</div>
+      <div class="val">${fmtBRL(totalVigente)}</div>
+      <div class="sub">${nVig} passagem(ns) com saldo</div>
+    </div>
+    <div class="card gold">
+      <div class="lbl">Expirando (≤30 dias)</div>
+      <div class="val">${nExp}</div>
+      <div class="sub">Uso prioritário</div>
+    </div>
+    <div class="card red">
+      <div class="lbl">Expirado</div>
+      <div class="val">${fmtBRL(totalExpirado)}</div>
+      <div class="sub">Fora do prazo de 1 ano</div>
+    </div>
+  `;
+
+  const listEl = document.getElementById('cancelList');
+
+  if(!enriched.length){
+    listEl.innerHTML = `<div class="empty">
+      <strong>Nenhuma passagem cancelada registrada</strong>
+      Quando uma passagem for cancelada, os servidores com crédito aparecerão aqui.
+    </div>`;
+    return;
+  }
+
+  const porServidor = {};
+  enriched.forEach(p => {
+    const k = p.nome || 'Sem nome';
+    if(!porServidor[k]) porServidor[k] = { nome: k, items: [], total: 0, totalVig: 0 };
+    porServidor[k].items.push(p);
+    porServidor[k].total += p.valor || 0;
+    if(p.statusCred.status !== 'Expirado') porServidor[k].totalVig += p.valor || 0;
+  });
+
+  const servidores = Object.values(porServidor)
+    .sort((a,b) => b.totalVig - a.totalVig || b.total - a.total);
+
+  listEl.innerHTML = servidores.map(s => `
+    <div class="cancel-server">
+      <div class="cancel-server-head">
+        <div>
+          <div class="nm">${esc(s.nome)}</div>
+          <div class="meta">${s.items.length} passagem(ns) cancelada(s) · crédito no nome do servidor</div>
+        </div>
+        <div class="tot">Saldo vigente: ${fmtBRL(s.totalVig)}</div>
+      </div>
+      ${s.items.map(p => `
+        <div class="cancel-item">
+          <div class="inf">
+            <div class="dest">${esc(p.partida)} → ${esc(p.chegada)}</div>
+            <div class="meta">
+              Proc. ${esc(p.processo) || '—'} · Setor ${esc(p.setor) || '—'}
+              ${p.motivo ? ' · Motivo: ' + esc(p.motivo) : ''}
+              ${p.localizador ? ' · Localizador: ' + esc(p.localizador) : ''}
+            </div>
+          </div>
+          <div class="rt">
+            <div class="val">${fmtBRL(p.valor)}</div>
+            <div class="valid">
+              ${p.dataCompra ? 'Compra: <strong>' + dataBR(p.dataCompra) + '</strong>' : ''}
+              ${p.validade ? '<br>Válido até <strong>' + dataBR(p.validade.toISOString()) + '</strong>' : ''}
+            </div>
+            <span class="chip ${p.statusCred.classe}" style="margin-top:6px">
+              ${p.statusCred.status}${p.statusCred.dias >= 0 ? ' · ' + p.statusCred.dias + ' dias' : ''}
+            </span>
+          </div>
+        </div>
+      `).join('')}
+    </div>
+  `).join('');
+}
+
+/* ============================================================
+   FATURAS — total comparado com TODAS as passagens
+   ============================================================ */
+let editandoFaturaId = null;
+
+function renderFaturas(){
+  const totalFat  = faturasAires.reduce((s,f) => s + (f.valor || 0), 0);
+  const totalPass = passagensAires.reduce((s,p) => s + (p.valor || 0), 0);
+  const diff = totalFat - totalPass;
+
+  document.getElementById('faturasCards').innerHTML = `
+    <div class="card" data-go="faturas">
+      <div class="lbl">Faturas registradas</div>
+      <div class="val">${faturasAires.length}</div>
+      <div class="sub">Documentos lançados</div>
+    </div>
+    <div class="card gold" data-go="faturas">
+      <div class="lbl">Total faturado</div>
+      <div class="val">${fmtBRL(totalFat)}</div>
+      <div class="sub">Soma das faturas</div>
+    </div>
+    <div class="card green" data-go="aires">
+      <div class="lbl">Total em passagens</div>
+      <div class="val">${fmtBRL(totalPass)}</div>
+      <div class="sub">Todas as passagens (ativas + canceladas)</div>
+    </div>
+    <div class="card ${Math.abs(diff) > 1 ? 'red' : 'green'}" data-go="dashboard">
+      <div class="lbl">Diferença (faturas × passagens)</div>
+      <div class="val">${fmtBRL(diff)}</div>
+      <div class="sub">${Math.abs(diff) <= 1 ? 'Valores conferidos' : 'Verifique a conciliação'}</div>
+    </div>
+  `;
+
+  const tbody = document.getElementById('faturasTbody');
+  if(!faturasAires.length){
+    tbody.innerHTML = `<tr><td colspan="6"><div class="empty">
+      <strong>Nenhuma fatura registrada</strong>
+      Clique em "Adicionar fatura" para lançar o primeiro documento.
+    </div></td></tr>`;
+    return;
+  }
+
+  tbody.innerHTML = faturasAires.slice().reverse().map(f => `
+    <tr>
+      <td class="td-nome">${esc(f.numero)}</td>
+      <td>${dataBR(f.data)}</td>
+      <td>${esc(f.periodo) || '—'}</td>
+      <td class="num">${fmtBRL(f.valor)}</td>
+      <td class="wrap">${esc(f.obs) || '—'}</td>
+      <td style="white-space:nowrap;text-align:center">
+        <button class="btn btn-ghost btn-sm" data-edit-fat="${f.id}">Editar</button>
+        <button class="btn btn-danger btn-sm" data-del-fat="${f.id}" style="margin-left:4px">Excluir</button>
+      </td>
+    </tr>
+  `).join('');
+}
+
+document.getElementById('btnNovaFatura').addEventListener('click', () => {
+  editandoFaturaId = null;
+  document.getElementById('formFatura').reset();
+  document.getElementById('modalFaturaTitulo').textContent = 'Adicionar fatura';
+  abrirModal('modalFatura');
+});
+
+document.getElementById('formFatura').addEventListener('submit', e => {
+  e.preventDefault();
+  const dados = {
+    id: editandoFaturaId || ('f' + Date.now()),
+    numero:  document.getElementById('fatNumero').value.trim(),
+    data:    document.getElementById('fatData').value,
+    periodo: document.getElementById('fatPeriodo').value.trim(),
+    valor:   parseFloat(document.getElementById('fatValor').value) || 0,
+    obs:     document.getElementById('fatObs').value.trim()
+  };
+
+  if(editandoFaturaId){
+    const idx = faturasAires.findIndex(x => x.id === editandoFaturaId);
+    if(idx > -1) faturasAires[idx] = dados;
+    toast('Fatura atualizada!', 'ok');
+  } else {
+    faturasAires.push(dados);
+    toast('Fatura registrada!', 'ok');
+  }
+
+  salvarFaturas();
+  fecharModal('modalFatura');
+  renderAll();
+});
+
+document.getElementById('faturasTbody').addEventListener('click', e => {
+  const btnEdit = e.target.closest('[data-edit-fat]');
+  const btnDel  = e.target.closest('[data-del-fat]');
+
+  if(btnEdit){
+    const id = btnEdit.dataset.editFat;
+    pedirSenha(() => {
+      const f = faturasAires.find(x => x.id === id);
+      if(!f) return;
+      editandoFaturaId = id;
+      document.getElementById('modalFaturaTitulo').textContent = 'Editar fatura';
+      document.getElementById('fatNumero').value  = f.numero;
+      document.getElementById('fatData').value    = f.data;
+      document.getElementById('fatPeriodo').value = f.periodo;
+      document.getElementById('fatValor').value   = f.valor;
+      document.getElementById('fatObs').value     = f.obs;
+      abrirModal('modalFatura');
+    });
+  }
+
+  if(btnDel){
+    const id = btnDel.dataset.delFat;
+    pedirSenha(() => {
+      faturasAires = faturasAires.filter(x => x.id !== id);
+      salvarFaturas();
+      renderAll();
+      toast('Fatura excluída.', 'err');
+    });
+  }
+});
+
+/* ============================================================
+   RENDER GERAL
+   ============================================================ */
+function renderAll(){
+  renderSidebarCancelInfo();
+  renderDashboard();
+  renderAires();
+  renderVN();
+  renderCanceladas();
+  renderFaturas();
+}
+
+/* ============================================================
+   INICIALIZAÇÃO
+   ============================================================ */
+function iniciar(){
+  const hoje = new Date();
+  document.getElementById('dataHoje').textContent =
+    hoje.toLocaleDateString('pt-BR', { day:'2-digit', month:'long', year:'numeric' });
+  carregarDados();
+  renderAll();
+}
+
+iniciar();
+</script>
+</body>
+</html>
