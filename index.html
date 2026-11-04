@@ -15,6 +15,12 @@
   --borda:#dbe3ec; --fundo:#f4f7fb; --branco:#fff;
   --radius:14px; --shadow:0 2px 12px rgba(10,61,98,.08);
   --shadow-lg:0 12px 40px rgba(10,61,98,.22);
+  /* Azul mais claro da sidebar */
+  --sidebar-1:#1f6399;
+  --sidebar-2:#0f4570;
+  --sidebar-text:#eaf3fb;
+  --sidebar-text-strong:#ffffff;
+  --sidebar-muted:#a8cbe8;
 }
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{height:100%}
@@ -24,70 +30,78 @@ body{
 }
 .app{display:flex;min-height:100vh}
 
-/* ---------- SIDEBAR ---------- */
+/* ---------- SIDEBAR (azul mais claro) ---------- */
 .sidebar{
   width:280px;flex-shrink:0;
-  background:linear-gradient(180deg,#0a3d62 0%,#062a45 100%);
+  background:linear-gradient(180deg,var(--sidebar-1) 0%,var(--sidebar-2) 100%);
   color:#fff;display:flex;flex-direction:column;
   position:sticky;top:0;height:100vh;z-index:120;
-  box-shadow:4px 0 24px rgba(6,42,69,.18);
+  box-shadow:4px 0 24px rgba(15,69,112,.22);
 }
 .sidebar-brand{
-  padding:22px 20px 18px;border-bottom:1px solid rgba(255,255,255,.1);
+  padding:22px 20px 18px;border-bottom:1px solid rgba(255,255,255,.14);
   display:flex;align-items:center;gap:12px;
 }
 .brand-mark{
   width:44px;height:44px;border-radius:12px;flex-shrink:0;
-  background:linear-gradient(135deg,#1565c0,#0a3d62);
+  background:linear-gradient(135deg,#2196f3,#1565c0);
   display:flex;align-items:center;justify-content:center;
   font-weight:800;font-size:15px;letter-spacing:.5px;
-  border:1.5px solid rgba(255,255,255,.25);color:#fff;
+  border:1.5px solid rgba(255,255,255,.35);color:#fff;
 }
-.brand-text strong{display:block;font-size:13.5px;letter-spacing:.4px}
-.brand-text span{display:block;font-size:11px;color:#9fc0dd;margin-top:2px}
+.brand-text strong{display:block;font-size:13.5px;letter-spacing:.4px;color:var(--sidebar-text-strong)}
+.brand-text span{display:block;font-size:11px;color:var(--sidebar-muted);margin-top:2px}
 .sidebar-label{
   padding:20px 22px 8px;font-size:10.5px;letter-spacing:1.4px;
-  text-transform:uppercase;color:#7fa8cc;font-weight:700;
+  text-transform:uppercase;color:var(--sidebar-muted);font-weight:700;
 }
 .nav{display:flex;flex-direction:column;gap:4px;padding:0 12px}
 .nav-item{
   display:flex;align-items:center;gap:12px;padding:12px 14px;
   background:transparent;border:0;border-left:3px solid transparent;
-  border-radius:10px;color:#c9dcee;font-family:inherit;font-size:13.2px;font-weight:500;
+  border-radius:10px;color:var(--sidebar-text);
+  font-family:inherit;font-size:13.2px;font-weight:500;
   text-align:left;cursor:pointer;line-height:1.25;transition:.18s;
 }
-.nav-item svg{width:18px;height:18px;flex-shrink:0;stroke:currentColor;fill:none;stroke-width:1.8}
-.nav-item:hover{background:rgba(255,255,255,.08);color:#fff}
-.nav-item.active{
-  background:linear-gradient(90deg,rgba(21,101,192,.55),rgba(21,101,192,.18));
-  color:#fff;font-weight:600;border-left-color:var(--vermelho-2);
+.nav-item svg{width:18px;height:18px;flex-shrink:0;stroke:currentColor;fill:none;stroke-width:1.9}
+.nav-item:hover{
+  background:rgba(255,255,255,.14);
+  color:var(--sidebar-text-strong);
 }
+.nav-item.active{
+  background:linear-gradient(90deg,rgba(33,150,243,.72),rgba(33,150,243,.32));
+  color:var(--sidebar-text-strong);
+  font-weight:700;
+  border-left-color:var(--vermelho-2);
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.08);
+}
+.nav-item small{color:rgba(234,243,251,.75)!important}
 
-/* --- Rodapé lateral com info de canceladas --- */
+/* ---------- Rodapé lateral ---------- */
 .sidebar-footer{
   margin-top:auto;padding:14px 16px;
-  border-top:1px solid rgba(255,255,255,.1);
-  font-size:10.5px;color:#7fa8cc;line-height:1.5;
+  border-top:1px solid rgba(255,255,255,.14);
+  font-size:10.5px;color:var(--sidebar-muted);line-height:1.55;
 }
 .sidebar-cancel-info{
-  background:rgba(229,57,53,.10);
-  border:1px solid rgba(229,57,53,.28);
+  background:rgba(255,255,255,.09);
+  border:1px solid rgba(255,255,255,.22);
   border-radius:10px;
   padding:11px 13px;
   margin-bottom:14px;
   font-size:11px;
   line-height:1.5;
-  color:#ffd5d5;
+  color:var(--sidebar-text);
   cursor:pointer;
   transition:.18s;
 }
 .sidebar-cancel-info:hover{
-  background:rgba(229,57,53,.18);
-  border-color:rgba(229,57,53,.5);
+  background:rgba(255,255,255,.16);
+  border-color:rgba(255,255,255,.38);
 }
 .sidebar-cancel-info .tit{
   font-size:10px;text-transform:uppercase;letter-spacing:1.1px;
-  color:#ff9a9a;font-weight:800;margin-bottom:7px;
+  color:#ffd0d0;font-weight:800;margin-bottom:7px;
   display:flex;align-items:center;gap:6px;
 }
 .sidebar-cancel-info .tit::before{
@@ -96,17 +110,17 @@ body{
 }
 .sidebar-cancel-info .row{
   display:flex;justify-content:space-between;gap:8px;
-  margin-top:4px;color:#ffd5d5;
+  margin-top:4px;color:var(--sidebar-text);
 }
 .sidebar-cancel-info .row strong{color:#fff;font-weight:700}
 .sidebar-cancel-info .alert{
   margin-top:9px;padding-top:9px;
-  border-top:1px dashed rgba(255,180,180,.35);
-  color:#ffb347;font-weight:700;font-size:10.5px;
+  border-top:1px dashed rgba(255,220,180,.45);
+  color:#ffcf7a;font-weight:700;font-size:10.5px;
   display:flex;align-items:center;gap:5px;
 }
 .sidebar-cancel-info .empty-msg{
-  color:#ffbdbd;font-size:11px;font-style:italic;
+  color:rgba(234,243,251,.85);font-size:11px;font-style:italic;
 }
 
 /* ---------- MAIN ---------- */
@@ -382,7 +396,6 @@ td.wrap{min-width:220px}
 .cancel-item .valid{font-size:11px;color:var(--cinza);margin-top:3px;line-height:1.5}
 .cancel-item .valid strong{color:#1f2d3d;font-weight:700}
 
-/* Info box no modal sobre a regra */
 .regra-credito{
   background:linear-gradient(90deg,#fff8e5,#fffbf0);
   border:1px solid #f0d99a;border-radius:11px;
@@ -428,32 +441,31 @@ td.wrap{min-width:220px}
     <nav class="nav">
       <button class="nav-item active" data-tab="dashboard">
         <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg>
-        <span>Dashboard<br><small style="opacity:.7;font-weight:400">Visão Geral</small></span>
+        <span>Dashboard<br><small style="opacity:.75;font-weight:400">Visão Geral</small></span>
       </button>
       <button class="nav-item" data-tab="vn">
         <svg viewBox="0 0 24 24"><path d="M2 12l20-8-8 20-2.5-8.5L2 12z"/></svg>
-        <span>Registro de viagens<br><small style="opacity:.7;font-weight:400">VN Soares</small></span>
+        <span>Registro de viagens<br><small style="opacity:.75;font-weight:400">VN Soares</small></span>
       </button>
       <button class="nav-item" data-tab="aires">
         <svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h10"/></svg>
-        <span>Registro de Passagens<br><small style="opacity:.7;font-weight:400">Aires</small></span>
+        <span>Registro de Passagens<br><small style="opacity:.75;font-weight:400">Aires</small></span>
       </button>
       <button class="nav-item" data-tab="faturas">
         <svg viewBox="0 0 24 24"><path d="M6 3h9l4 4v14H6z"/><path d="M9 12h7M9 16h5M9 8h3"/></svg>
-        <span>Registro de Faturas<br><small style="opacity:.7;font-weight:400">Aires</small></span>
+        <span>Registro de Faturas<br><small style="opacity:.75;font-weight:400">Aires</small></span>
       </button>
       <button class="nav-item" data-tab="canceladas">
         <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9 9l6 6M15 9l-6 6"/></svg>
-        <span>Passagens Canceladas<br><small style="opacity:.7;font-weight:400">Aires</small></span>
+        <span>Passagens Canceladas<br><small style="opacity:.75;font-weight:400">Aires</small></span>
       </button>
     </nav>
 
     <div class="sidebar-footer">
-      <!-- Rodapé dinâmico com info de canceladas -->
       <div class="sidebar-cancel-info" id="sidebarCancelInfo" title="Clique para ver detalhes dos créditos"></div>
       Secretaria da Administração<br>
       Governo do Estado da Bahia<br>
-      <span style="opacity:.6">v1.4 · Painel de Contratos</span>
+      <span style="opacity:.6">v1.5 · Painel de Contratos</span>
     </div>
   </aside>
 
@@ -1046,11 +1058,7 @@ function toast(msg, tipo){
   t._timer = setTimeout(() => t.classList.remove('show'), 3200);
 }
 
-/* ============================================================
-   VALIDADE DO CRÉDITO — 1 ano a partir da DATA DA COMPRA
-   ============================================================ */
 function calcValidadeCredito(p){
-  // Base = data da compra (obrigatória). Fallback para canceladaEm (legado).
   const base = p.dataCompra || (p.canceladaEm ? p.canceladaEm.split('T')[0] : null);
   if(!base) return null;
   const d = new Date(base + 'T12:00:00');
@@ -1165,7 +1173,7 @@ document.getElementById('btnConfirmarSenha').addEventListener('click', confirmar
 senhaInput.addEventListener('keydown', e => { if(e.key === 'Enter'){ e.preventDefault(); confirmarSenha(); } });
 
 /* ============================================================
-   DASHBOARD — TODAS as passagens contam para o consumo
+   DASHBOARD
    ============================================================ */
 function renderDashboard(){
   const total = passagensAires.reduce((s,p) => s + (p.valor || 0), 0);
@@ -1328,7 +1336,7 @@ function renderSidebarCancelInfo(){
     <div class="tit">Passagens Canceladas</div>
     <div class="row"><span>Créditos vigentes</span><strong>${nVig}</strong></div>
     <div class="row"><span>Valor disponível</span><strong>${fmtBRL(totalVig)}</strong></div>
-    ${nExpirado > 0 ? `<div class="row" style="opacity:.7"><span>Expirados</span><strong>${nExpirado}</strong></div>` : ''}
+    ${nExpirado > 0 ? `<div class="row" style="opacity:.75"><span>Expirados</span><strong>${nExpirado}</strong></div>` : ''}
     ${nExpirando > 0 ? `<div class="alert">⚠ ${nExpirando} expirando em ≤30 dias</div>` : ''}
   `;
 }
@@ -1606,7 +1614,6 @@ document.getElementById('airesTbody').addEventListener('click', e => {
       const idx = passagensAires.findIndex(x => x.id === id);
       if(idx > -1){
         passagensAires[idx].status = 'cancelada';
-        // preserva dataCompra; se não existir, usa hoje
         if(!passagensAires[idx].dataCompra){
           passagensAires[idx].dataCompra = new Date().toISOString().split('T')[0];
         }
@@ -1722,7 +1729,7 @@ document.getElementById('cancelTbody').addEventListener('click', e => {
 });
 
 /* ============================================================
-   MODAL DE CANCELAMENTOS (Dashboard)
+   MODAL DE CANCELAMENTOS
    ============================================================ */
 function renderModalCancelamentos(){
   const canceladas = passagensAires.filter(p => p.status === 'cancelada');
@@ -1824,7 +1831,7 @@ function renderModalCancelamentos(){
 }
 
 /* ============================================================
-   FATURAS — total comparado com TODAS as passagens
+   FATURAS
    ============================================================ */
 let editandoFaturaId = null;
 
