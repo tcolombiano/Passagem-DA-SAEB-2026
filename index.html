@@ -15,12 +15,8 @@
   --borda:#dbe3ec; --fundo:#f4f7fb; --branco:#fff;
   --radius:14px; --shadow:0 2px 12px rgba(10,61,98,.08);
   --shadow-lg:0 12px 40px rgba(10,61,98,.22);
-  /* Azul mais claro da sidebar */
-  --sidebar-1:#1f6399;
-  --sidebar-2:#0f4570;
-  --sidebar-text:#eaf3fb;
-  --sidebar-text-strong:#ffffff;
-  --sidebar-muted:#a8cbe8;
+  --sidebar-1:#1f6399; --sidebar-2:#0f4570;
+  --sidebar-text:#eaf3fb; --sidebar-text-strong:#ffffff; --sidebar-muted:#a8cbe8;
 }
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{height:100%}
@@ -30,7 +26,6 @@ body{
 }
 .app{display:flex;min-height:100vh}
 
-/* ---------- SIDEBAR (azul mais claro) ---------- */
 .sidebar{
   width:280px;flex-shrink:0;
   background:linear-gradient(180deg,var(--sidebar-1) 0%,var(--sidebar-2) 100%);
@@ -64,20 +59,15 @@ body{
   text-align:left;cursor:pointer;line-height:1.25;transition:.18s;
 }
 .nav-item svg{width:18px;height:18px;flex-shrink:0;stroke:currentColor;fill:none;stroke-width:1.9}
-.nav-item:hover{
-  background:rgba(255,255,255,.14);
-  color:var(--sidebar-text-strong);
-}
+.nav-item:hover{background:rgba(255,255,255,.14);color:var(--sidebar-text-strong)}
 .nav-item.active{
   background:linear-gradient(90deg,rgba(33,150,243,.72),rgba(33,150,243,.32));
-  color:var(--sidebar-text-strong);
-  font-weight:700;
+  color:var(--sidebar-text-strong);font-weight:700;
   border-left-color:var(--vermelho-2);
   box-shadow:inset 0 0 0 1px rgba(255,255,255,.08);
 }
 .nav-item small{color:rgba(234,243,251,.75)!important}
 
-/* ---------- Rodapé lateral ---------- */
 .sidebar-footer{
   margin-top:auto;padding:14px 16px;
   border-top:1px solid rgba(255,255,255,.14);
@@ -86,19 +76,11 @@ body{
 .sidebar-cancel-info{
   background:rgba(255,255,255,.09);
   border:1px solid rgba(255,255,255,.22);
-  border-radius:10px;
-  padding:11px 13px;
-  margin-bottom:14px;
-  font-size:11px;
-  line-height:1.5;
-  color:var(--sidebar-text);
-  cursor:pointer;
-  transition:.18s;
+  border-radius:10px;padding:11px 13px;margin-bottom:14px;
+  font-size:11px;line-height:1.5;color:var(--sidebar-text);
+  cursor:pointer;transition:.18s;
 }
-.sidebar-cancel-info:hover{
-  background:rgba(255,255,255,.16);
-  border-color:rgba(255,255,255,.38);
-}
+.sidebar-cancel-info:hover{background:rgba(255,255,255,.16);border-color:rgba(255,255,255,.38)}
 .sidebar-cancel-info .tit{
   font-size:10px;text-transform:uppercase;letter-spacing:1.1px;
   color:#ffd0d0;font-weight:800;margin-bottom:7px;
@@ -108,22 +90,15 @@ body{
   content:'';width:6px;height:6px;border-radius:50%;background:#ff6b6b;
   box-shadow:0 0 6px #ff6b6b;
 }
-.sidebar-cancel-info .row{
-  display:flex;justify-content:space-between;gap:8px;
-  margin-top:4px;color:var(--sidebar-text);
-}
+.sidebar-cancel-info .row{display:flex;justify-content:space-between;gap:8px;margin-top:4px;color:var(--sidebar-text)}
 .sidebar-cancel-info .row strong{color:#fff;font-weight:700}
 .sidebar-cancel-info .alert{
-  margin-top:9px;padding-top:9px;
-  border-top:1px dashed rgba(255,220,180,.45);
+  margin-top:9px;padding-top:9px;border-top:1px dashed rgba(255,220,180,.45);
   color:#ffcf7a;font-weight:700;font-size:10.5px;
   display:flex;align-items:center;gap:5px;
 }
-.sidebar-cancel-info .empty-msg{
-  color:rgba(234,243,251,.85);font-size:11px;font-style:italic;
-}
+.sidebar-cancel-info .empty-msg{color:rgba(234,243,251,.85);font-size:11px;font-style:italic}
 
-/* ---------- MAIN ---------- */
 .main{flex:1;min-width:0;display:flex;flex-direction:column}
 .topbar{
   position:sticky;top:0;z-index:100;background:#fff;padding:12px 26px;
@@ -153,7 +128,6 @@ body{
   background:#fff;cursor:pointer;color:var(--azul);
 }
 
-/* ---------- CONTENT ---------- */
 .content{padding:24px 26px 70px;flex:1}
 .tab-panel{display:none}
 .tab-panel.active{display:block;animation:fadeUp .28s ease}
@@ -166,6 +140,43 @@ body{
 .section-head h2{font-size:19px;font-weight:800;color:var(--azul);letter-spacing:-.3px}
 .section-head p{font-size:12.5px;color:var(--cinza);margin-top:3px}
 
+/* ---------- FILTRO DO DASHBOARD ---------- */
+.dash-filter{
+  background:#fff;border-radius:var(--radius);box-shadow:var(--shadow);
+  padding:14px 18px;margin-bottom:16px;
+  display:flex;align-items:center;gap:12px;flex-wrap:wrap;
+}
+.dash-filter-group{
+  display:flex;align-items:center;gap:10px;flex:1;min-width:220px;
+}
+.dash-filter-group svg{
+  width:18px;height:18px;stroke:var(--azul-claro);fill:none;stroke-width:1.9;
+  flex-shrink:0;
+}
+.dash-filter-group label{
+  font-size:11px;font-weight:800;color:var(--cinza);
+  text-transform:uppercase;letter-spacing:.8px;white-space:nowrap;
+}
+.dash-filter-group select{
+  flex:1;padding:10px 14px;border:1.5px solid var(--borda);border-radius:9px;
+  font-family:inherit;font-size:13px;color:#1f2d3d;background:#fff;
+  cursor:pointer;outline:0;max-width:420px;transition:.15s;
+}
+.dash-filter-group select:focus{
+  border-color:var(--azul-claro);box-shadow:0 0 0 3px rgba(21,101,192,.12);
+}
+.dash-filter-info{
+  background:linear-gradient(90deg,#eaf4ff,#f5faff);
+  border:1px solid #b9d3ea;border-radius:11px;
+  padding:12px 16px;margin-bottom:18px;
+  font-size:12.5px;color:var(--azul);
+  display:flex;align-items:center;gap:10px;flex-wrap:wrap;
+}
+.dash-filter-info svg{
+  width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2;flex-shrink:0;
+}
+.dash-filter-info strong{font-weight:800}
+
 .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(205px,1fr));gap:15px;margin-bottom:22px}
 .card{
   background:#fff;border-radius:var(--radius);padding:17px 18px;
@@ -177,7 +188,7 @@ body{
 .card.gold{border-left-color:var(--amarelo)}
 .card .lbl{font-size:11px;text-transform:uppercase;letter-spacing:.9px;color:var(--cinza);font-weight:700}
 .card .val{font-size:22px;font-weight:800;color:var(--azul);margin-top:7px;letter-spacing:-.5px}
-.card .sub{font-size:11.5px;color:var(--cinza-2);margin-top:4px}
+.card .sub{font-size:11.5px;color:var(--cinza-2);margin-top:4px;line-height:1.4}
 .card.red .val{color:var(--vermelho)}
 .card.green .val{color:var(--verde)}
 
@@ -375,9 +386,7 @@ td.wrap{min-width:220px}
   align-items:center;gap:12px;flex-wrap:wrap;
   border-bottom:1px solid var(--borda);
 }
-.cancel-server-head .nm{
-  font-size:13.5px;font-weight:800;color:var(--azul);line-height:1.3;
-}
+.cancel-server-head .nm{font-size:13.5px;font-weight:800;color:var(--azul);line-height:1.3}
 .cancel-server-head .meta{font-size:11px;color:var(--cinza);margin-top:2px;font-weight:500}
 .cancel-server-head .tot{
   font-size:13px;font-weight:800;color:var(--azul);
@@ -415,6 +424,7 @@ td.wrap{min-width:220px}
   .topbar-right{display:none}
   .content{padding:18px 14px 60px}
   .cancel-item .rt{text-align:left;min-width:0}
+  .dash-filter-group select{max-width:none}
 }
 @media(max-width:520px){
   .section-head{flex-direction:column;align-items:stretch}
@@ -465,7 +475,7 @@ td.wrap{min-width:220px}
       <div class="sidebar-cancel-info" id="sidebarCancelInfo" title="Clique para ver detalhes dos créditos"></div>
       Secretaria da Administração<br>
       Governo do Estado da Bahia<br>
-      <span style="opacity:.6">v1.5 · Painel de Contratos</span>
+      <span style="opacity:.6">v1.6 · Painel de Contratos</span>
     </div>
   </aside>
 
@@ -507,13 +517,25 @@ td.wrap{min-width:220px}
           </div>
         </div>
 
+        <!-- FILTRO DE PASSAGEIROS -->
+        <div class="dash-filter">
+          <div class="dash-filter-group">
+            <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+            <label for="dashFiltroPassageiro">Passageiro:</label>
+            <select id="dashFiltroPassageiro">
+              <option value="">Todos os passageiros</option>
+            </select>
+          </div>
+        </div>
+        <div class="dash-filter-info" id="dashFiltroInfo" style="display:none"></div>
+
         <div class="cards" id="dashAiresCards"></div>
 
         <div class="contrato-box">
           <div class="contrato-top">
             <div>
               <h3>Consumo do Contrato Aires</h3>
-              <p style="font-size:12px;color:var(--cinza);margin-top:3px">
+              <p style="font-size:12px;color:var(--cinza);margin-top:3px" id="contratoBoxSub">
                 Contrato de R$ 300.000,00 · Vigência: 03/11/2026 a 02/11/2027 (12 meses)
               </p>
             </div>
@@ -530,8 +552,8 @@ td.wrap{min-width:220px}
         </div>
 
         <div class="estimativa">
-          <h3>Estimativa de duração do saldo contratual</h3>
-          <p class="desc">Projeção baseada no consumo total do contrato (passagens ativas + canceladas).</p>
+          <h3 id="estTitulo">Estimativa de duração do saldo contratual</h3>
+          <p class="desc" id="estDesc">Projeção baseada no consumo total do contrato (passagens ativas + canceladas).</p>
           <div class="est-grid" id="estGrid"></div>
           <div id="vereditoBox"></div>
         </div>
@@ -590,7 +612,8 @@ td.wrap{min-width:220px}
                 <tr>
                   <th>Servidor(a)</th><th>Processo SEI</th><th>Setor</th><th>Destino</th>
                   <th>Ida</th><th>Volta</th><th>Companhia</th>
-                  <th>Localizador</th><th>Bilhete</th><th>Compra</th>
+                  <th>Localizador</th><th>Bilhete</th>
+                  <th>Data Compra</th><th>Data Emissão</th>
                   <th class="num">Valor</th><th>Motivo</th><th>Observação</th>
                   <th style="text-align:center">Ações</th>
                 </tr>
@@ -621,8 +644,12 @@ td.wrap{min-width:220px}
             <table>
               <thead>
                 <tr>
-                  <th>Nº da Fatura</th><th>Data de Emissão</th><th>Período de Referência</th>
-                  <th class="num">Valor</th><th>Observação</th>
+                  <th>Nº da Fatura</th>
+                  <th>Data de Emissão</th>
+                  <th>Data de Vencimento</th>
+                  <th>Período de Referência</th>
+                  <th class="num">Valor</th>
+                  <th>Observação</th>
                   <th style="text-align:center">Ações</th>
                 </tr>
               </thead>
@@ -755,7 +782,7 @@ td.wrap{min-width:220px}
           </div>
 
           <div class="field">
-            <label for="fDataCompra">Data da compra <span class="req">*</span></label>
+            <label for="fDataCompra">Data da compra da passagem <span class="req">*</span></label>
             <input type="date" id="fDataCompra" required>
             <div class="hint" id="hintDataCompra" style="display:none">
               A validade do crédito (1 ano) é contada a partir desta data
@@ -763,6 +790,11 @@ td.wrap{min-width:220px}
           </div>
 
           <div class="field">
+            <label for="fDataEmissao">Data da emissão da passagem</label>
+            <input type="date" id="fDataEmissao">
+          </div>
+
+          <div class="field full">
             <label for="fMotivo">Motivo da passagem</label>
             <input type="text" id="fMotivo" placeholder="Ex.: CONSAD, evento, capacitação...">
           </div>
@@ -838,6 +870,10 @@ td.wrap{min-width:220px}
           <div class="field">
             <label for="fatData">Data de emissão <span class="req">*</span></label>
             <input type="date" id="fatData" required>
+          </div>
+          <div class="field">
+            <label for="fatVencimento">Data de vencimento</label>
+            <input type="date" id="fatVencimento">
           </div>
           <div class="field">
             <label for="fatPeriodo">Período de referência</label>
@@ -1083,6 +1119,7 @@ function statusCredito(validade){
 let passagensAires = [];
 let faturasAires   = [];
 let modoCancelada  = false;
+let dashFiltroPassageiro = '';
 
 function carregarDados(){
   try{ passagensAires = JSON.parse(localStorage.getItem(KEY_PASSAGENS)) || []; }catch(e){ passagensAires = []; }
@@ -1173,59 +1210,135 @@ document.getElementById('btnConfirmarSenha').addEventListener('click', confirmar
 senhaInput.addEventListener('keydown', e => { if(e.key === 'Enter'){ e.preventDefault(); confirmarSenha(); } });
 
 /* ============================================================
-   DASHBOARD
+   FILTRO DE PASSAGEIROS (Dashboard)
+   ============================================================ */
+function popularFiltroPassageiros(){
+  const select = document.getElementById('dashFiltroPassageiro');
+  if(!select) return;
+  const nomes = [...new Set(passagensAires.map(p => p.nome).filter(Boolean))].sort((a,b) =>
+    a.localeCompare(b, 'pt-BR')
+  );
+  if(dashFiltroPassageiro && !nomes.includes(dashFiltroPassageiro)){
+    dashFiltroPassageiro = '';
+  }
+  select.innerHTML = '<option value="">Todos os passageiros</option>' +
+    nomes.map(n => `<option value="${esc(n)}"${n === dashFiltroPassageiro ? ' selected' : ''}>${esc(n)}</option>`).join('');
+}
+
+document.getElementById('dashFiltroPassageiro').addEventListener('change', e => {
+  dashFiltroPassageiro = e.target.value;
+  renderDashboard();
+});
+
+/* ============================================================
+   DASHBOARD (com filtro)
    ============================================================ */
 function renderDashboard(){
-  const total = passagensAires.reduce((s,p) => s + (p.valor || 0), 0);
+  popularFiltroPassageiros();
+
+  const filtroAtivo = dashFiltroPassageiro !== '';
+  const base = filtroAtivo
+    ? passagensAires.filter(p => p.nome === dashFiltroPassageiro)
+    : passagensAires;
+
+  const total = base.reduce((s,p) => s + (p.valor || 0), 0);
   const saldo = Math.max(0, VALOR_CONTRATO_AIRES - total);
   const pct   = Math.min(100, (total / VALOR_CONTRATO_AIRES) * 100);
 
-  const ativas     = passagensAires.filter(p => p.status !== 'cancelada');
-  const canceladas = passagensAires.filter(p => p.status === 'cancelada');
+  const ativas     = base.filter(p => p.status !== 'cancelada');
+  const canceladas = base.filter(p => p.status === 'cancelada');
   const totalCanc  = canceladas.reduce((s,p) => s + (p.valor || 0), 0);
+
+  /* Banner de filtro ativo */
+  const infoEl = document.getElementById('dashFiltroInfo');
+  if(filtroAtivo){
+    infoEl.style.display = 'flex';
+    infoEl.innerHTML = `
+      <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+      <span>Filtro ativo: <strong>${esc(dashFiltroPassageiro)}</strong> · os indicadores abaixo refletem apenas este passageiro.</span>
+      <button class="btn btn-ghost btn-sm" id="btnLimparFiltroInfo" style="margin-left:auto">Limpar filtro</button>
+    `;
+    const btnLimpar = document.getElementById('btnLimparFiltroInfo');
+    if(btnLimpar){
+      btnLimpar.onclick = () => {
+        dashFiltroPassageiro = '';
+        document.getElementById('dashFiltroPassageiro').value = '';
+        renderDashboard();
+      };
+    }
+  } else {
+    infoEl.style.display = 'none';
+  }
+
+  /* Subtítulos adaptados ao filtro */
+  const subContrato = 'Vigência 03/11/2026 a 02/11/2027';
+  const subTotal = filtroAtivo
+    ? `${ativas.length} ativa(s) · ${canceladas.length} cancelada(s) · filtrado`
+    : `${ativas.length} ativa(s) · ${canceladas.length} cancelada(s) — todas contam`;
+  const subSaldo = filtroAtivo
+    ? 'Considerando o consumo deste passageiro'
+    : `${pct.toFixed(1).replace('.',',')}% consumido`;
 
   document.getElementById('dashAiresCards').innerHTML = `
     <div class="card" data-go="aires">
       <div class="lbl">Valor do contrato</div>
       <div class="val">${fmtBRL(VALOR_CONTRATO_AIRES)}</div>
-      <div class="sub">Vigência 03/11/2026 a 02/11/2027</div>
+      <div class="sub">${subContrato}</div>
     </div>
     <div class="card gold" data-go="aires">
-      <div class="lbl">Total utilizado</div>
+      <div class="lbl">${filtroAtivo ? 'Total utilizado (filtrado)' : 'Total utilizado'}</div>
       <div class="val">${fmtBRL(total)}</div>
-      <div class="sub">${ativas.length} ativa(s) · ${canceladas.length} cancelada(s) — todas contam</div>
+      <div class="sub">${subTotal}</div>
     </div>
     <div class="card ${pct >= 85 ? 'red' : (pct >= 60 ? 'gold' : 'green')}" data-go="aires">
-      <div class="lbl">Saldo disponível</div>
-      <div class="val">${fmtBRL(saldo)}</div>
-      <div class="sub">${pct.toFixed(1).replace('.',',')}% consumido</div>
+      <div class="lbl">${filtroAtivo ? 'Participação no contrato' : 'Saldo disponível'}</div>
+      <div class="val">${filtroAtivo ? pct.toFixed(1).replace('.',',') + '%' : fmtBRL(saldo)}</div>
+      <div class="sub">${subSaldo}</div>
     </div>
     <div class="card" data-go="aires">
       <div class="lbl">Média por passagem</div>
-      <div class="val">${fmtBRL(passagensAires.length ? total / passagensAires.length : 0)}</div>
-      <div class="sub">Ticket médio geral</div>
+      <div class="val">${fmtBRL(base.length ? total / base.length : 0)}</div>
+      <div class="sub">${base.length} passagem(ns) · ticket médio</div>
     </div>
     <div class="card red" data-modal="modalCancelamentos">
       <div class="lbl">Canceladas</div>
       <div class="val">${canceladas.length}</div>
-      <div class="sub">${fmtBRL(totalCanc)} em créditos · clique p/ detalhes</div>
+      <div class="sub">${fmtBRL(totalCanc)} em créditos</div>
     </div>
   `;
 
+  /* Barra */
   const barFill = document.getElementById('barFill');
   const barPct  = document.getElementById('barPct');
   if(barFill) barFill.style.setProperty('--p', pct.toFixed(2) + '%');
   if(barPct) barPct.textContent = pct.toFixed(1).replace('.', ',') + '%';
 
-  renderEstimativa(total, saldo);
+  /* Subtítulo do quadro do contrato */
+  const contratoBoxSub = document.getElementById('contratoBoxSub');
+  if(contratoBoxSub){
+    contratoBoxSub.textContent = filtroAtivo
+      ? `Contrato de R$ 300.000,00 · considerando apenas ${dashFiltroPassageiro}`
+      : 'Contrato de R$ 300.000,00 · Vigência: 03/11/2026 a 02/11/2027 (12 meses)';
+  }
+
+  renderEstimativa(total, saldo, filtroAtivo);
 }
 
 /* ============================================================
    ESTIMATIVA
    ============================================================ */
-function renderEstimativa(total, saldo){
+function renderEstimativa(total, saldo, filtroAtivo){
   const estGrid = document.getElementById('estGrid');
   const verBox  = document.getElementById('vereditoBox');
+  const tituloEl = document.getElementById('estTitulo');
+  const descEl   = document.getElementById('estDesc');
+
+  if(tituloEl) tituloEl.textContent = filtroAtivo
+    ? `Estimativa — ${dashFiltroPassageiro}`
+    : 'Estimativa de duração do saldo contratual';
+  if(descEl) descEl.textContent = filtroAtivo
+    ? 'Projeção considerando apenas o consumo do passageiro filtrado.'
+    : 'Projeção baseada no consumo total do contrato (passagens ativas + canceladas).';
 
   const hoje = new Date();
   const ref  = hoje > INICIO_CONTRATO ? hoje : new Date(INICIO_CONTRATO);
@@ -1268,8 +1381,10 @@ function renderEstimativa(total, saldo){
   if(total === 0){
     verBox.innerHTML = `<div class="veredito neutro">
       <div class="ico">i</div>
-      <div>Nenhuma passagem registrada até o momento. Assim que a primeira passagem for lançada,
-      o sistema calculará automaticamente o ritmo de consumo e a projeção de duração do saldo contratual.</div>
+      <div>${filtroAtivo
+        ? `O passageiro <strong>${esc(dashFiltroPassageiro)}</strong> ainda não possui passagens registradas. Selecione outro passageiro ou "Todos" para ver os dados completos.`
+        : 'Nenhuma passagem registrada até o momento. Assim que a primeira passagem for lançada, o sistema calculará automaticamente o ritmo de consumo e a projeção de duração do saldo contratual.'}
+      </div>
     </div>`;
     return;
   }
@@ -1277,27 +1392,26 @@ function renderEstimativa(total, saldo){
     verBox.innerHTML = `<div class="veredito warn">
       <div class="ico">!</div>
       <div><strong>Saldo contratual esgotado.</strong> O valor de ${fmtBRL(VALOR_CONTRATO_AIRES)}
-      já foi totalmente comprometido (passagens ativas + canceladas). É necessário aditivo contratual
-      ou novo processo licitatório.</div>
+      já foi totalmente comprometido ${filtroAtivo ? 'por este passageiro' : '(passagens ativas + canceladas)'}.
+      É necessário aditivo contratual ou novo processo licitatório.</div>
     </div>`;
     return;
   }
   if(duracaoMeses >= mesesRestantes){
     verBox.innerHTML = `<div class="veredito ok">
       <div class="ico">✓</div>
-      <div><strong>O saldo tende a durar até o fim do contrato.</strong>
-      No ritmo atual de ${fmtBRL(consumoMensal)}/mês (incluindo canceladas), o saldo restante cobre
-      aproximadamente <strong>${fmtMeses(duracaoMeses)}</strong>, enquanto restam
-      <strong>${mesesRestantes.toFixed(1).replace('.', ',')} meses</strong> de vigência
-      (término em 02/11/2027).</div>
+      <div><strong>${filtroAtivo ? 'No ritmo deste passageiro, o saldo tende a durar.' : 'O saldo tende a durar até o fim do contrato.'}</strong>
+      No ritmo atual de ${fmtBRL(consumoMensal)}/mês ${filtroAtivo ? 'deste passageiro' : '(incluindo canceladas)'},
+      o saldo restante cobre aproximadamente <strong>${fmtMeses(duracaoMeses)}</strong>, enquanto restam
+      <strong>${mesesRestantes.toFixed(1).replace('.', ',')} meses</strong> de vigência (término em 02/11/2027).</div>
     </div>`;
   } else {
     const faltaMeses = (mesesRestantes - duracaoMeses).toFixed(1).replace('.', ',');
     verBox.innerHTML = `<div class="veredito warn">
       <div class="ico">!</div>
       <div><strong>Atenção: risco de esgotamento antecipado do saldo.</strong>
-      No ritmo atual de ${fmtBRL(consumoMensal)}/mês (incluindo canceladas), o saldo restante cobre
-      apenas <strong>${fmtMeses(duracaoMeses)}</strong>, mas ainda restam
+      No ritmo atual de ${fmtBRL(consumoMensal)}/mês ${filtroAtivo ? 'deste passageiro' : '(incluindo canceladas)'},
+      o saldo restante cobre apenas <strong>${fmtMeses(duracaoMeses)}</strong>, mas ainda restam
       <strong>${mesesRestantes.toFixed(1).replace('.', ',')} meses</strong> de contrato.
       Há uma lacuna estimada de <strong>${faltaMeses} meses</strong> sem cobertura contratual.</div>
     </div>`;
@@ -1432,7 +1546,7 @@ function renderAires(){
 
   const tbody = document.getElementById('airesTbody');
   if(!ativas.length){
-    tbody.innerHTML = `<tr><td colspan="14"><div class="empty">
+    tbody.innerHTML = `<tr><td colspan="15"><div class="empty">
       <strong>Nenhuma passagem ativa registrada</strong>
       Clique em "Adicionar nova passagem" para começar.
     </div></td></tr>`;
@@ -1451,6 +1565,7 @@ function renderAires(){
         </td>
         <td style="font-family:ui-monospace,monospace;font-size:11.5px">${esc(p.bilhete) || '—'}</td>
         <td>${p.dataCompra ? dataBR(p.dataCompra) : '—'}</td>
+        <td>${p.dataEmissao ? dataBR(p.dataEmissao) : '—'}</td>
         <td class="num">${fmtBRL(p.valor)}</td>
         <td class="wrap">${esc(p.motivo) || '—'}</td>
         <td class="wrap" style="font-size:11.5px;color:var(--cinza)">${esc(p.obs) || '—'}</td>
@@ -1526,6 +1641,7 @@ function abrirEdicao(id){
   document.getElementById('fLocalizador').value  = p.localizador || '';
   document.getElementById('fBilhete').value      = p.bilhete || '';
   document.getElementById('fDataCompra').value   = p.dataCompra || '';
+  document.getElementById('fDataEmissao').value  = p.dataEmissao || '';
   document.getElementById('fMotivo').value       = p.motivo || '';
   document.getElementById('fObs').value          = p.obs || '';
 
@@ -1571,6 +1687,7 @@ document.getElementById('formPassagem').addEventListener('submit', e => {
     localizador:  document.getElementById('fLocalizador').value.trim().toUpperCase(),
     bilhete:      document.getElementById('fBilhete').value.trim(),
     dataCompra:   document.getElementById('fDataCompra').value,
+    dataEmissao:  document.getElementById('fDataEmissao').value,
     motivo:       document.getElementById('fMotivo').value.trim(),
     obs:          document.getElementById('fObs').value.trim(),
   };
@@ -1865,7 +1982,7 @@ function renderFaturas(){
 
   const tbody = document.getElementById('faturasTbody');
   if(!faturasAires.length){
-    tbody.innerHTML = `<tr><td colspan="6"><div class="empty">
+    tbody.innerHTML = `<tr><td colspan="7"><div class="empty">
       <strong>Nenhuma fatura registrada</strong>
       Clique em "Adicionar fatura" para lançar o primeiro documento.
     </div></td></tr>`;
@@ -1875,7 +1992,8 @@ function renderFaturas(){
   tbody.innerHTML = faturasAires.slice().reverse().map(f => `
     <tr>
       <td class="td-nome">${esc(f.numero)}</td>
-      <td>${dataBR(f.data)}</td>
+      <td>${f.data ? dataBR(f.data) : '—'}</td>
+      <td>${f.vencimento ? dataBR(f.vencimento) : '—'}</td>
       <td>${esc(f.periodo) || '—'}</td>
       <td class="num">${fmtBRL(f.valor)}</td>
       <td class="wrap">${esc(f.obs) || '—'}</td>
@@ -1898,11 +2016,12 @@ document.getElementById('formFatura').addEventListener('submit', e => {
   e.preventDefault();
   const dados = {
     id: editandoFaturaId || ('f' + Date.now()),
-    numero:  document.getElementById('fatNumero').value.trim(),
-    data:    document.getElementById('fatData').value,
-    periodo: document.getElementById('fatPeriodo').value.trim(),
-    valor:   parseFloat(document.getElementById('fatValor').value) || 0,
-    obs:     document.getElementById('fatObs').value.trim()
+    numero:     document.getElementById('fatNumero').value.trim(),
+    data:       document.getElementById('fatData').value,
+    vencimento: document.getElementById('fatVencimento').value,
+    periodo:    document.getElementById('fatPeriodo').value.trim(),
+    valor:      parseFloat(document.getElementById('fatValor').value) || 0,
+    obs:        document.getElementById('fatObs').value.trim()
   };
 
   if(editandoFaturaId){
@@ -1930,11 +2049,12 @@ document.getElementById('faturasTbody').addEventListener('click', e => {
       if(!f) return;
       editandoFaturaId = id;
       document.getElementById('modalFaturaTitulo').textContent = 'Editar fatura';
-      document.getElementById('fatNumero').value  = f.numero;
-      document.getElementById('fatData').value    = f.data;
-      document.getElementById('fatPeriodo').value = f.periodo;
-      document.getElementById('fatValor').value   = f.valor;
-      document.getElementById('fatObs').value     = f.obs;
+      document.getElementById('fatNumero').value     = f.numero;
+      document.getElementById('fatData').value       = f.data;
+      document.getElementById('fatVencimento').value = f.vencimento || '';
+      document.getElementById('fatPeriodo').value    = f.periodo;
+      document.getElementById('fatValor').value      = f.valor;
+      document.getElementById('fatObs').value        = f.obs;
       abrirModal('modalFatura');
     });
   }
