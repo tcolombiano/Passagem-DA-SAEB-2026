@@ -523,7 +523,7 @@ td.wrap{min-width:220px}
       <div class="sidebar-cancel-info" id="sidebarCancelInfo" title="Clique para ver detalhes dos créditos"></div>
       Secretaria da Administração<br>
       Governo do Estado da Bahia<br>
-      <span style="opacity:.6">v1.8 · Painel de Contratos</span>
+      <span style="opacity:.6">v1.9 · Painel de Contratos</span>
     </div>
   </aside>
 
@@ -591,7 +591,7 @@ td.wrap{min-width:220px}
             <div>
               <h3>Consumo do Contrato Aires</h3>
               <p style="font-size:12px;color:var(--cinza);margin-top:3px" id="contratoBoxSub">
-                Contrato de R$ 300.000,00 · Vigência: 03/11/2026 a 02/11/2027 (12 meses)
+                Contrato de R$ 250.000,00 · Vigência: 03/11/2026 a 02/11/2027 (12 meses)
               </p>
             </div>
             <div class="pct" id="barPct">0,0%</div>
@@ -601,8 +601,8 @@ td.wrap{min-width:220px}
           </div>
           <div class="progress-labels">
             <span>R$ 0,00</span>
-            <span>R$ 150.000,00</span>
-            <span>R$ 300.000,00</span>
+            <span>R$ 125.000,00</span>
+            <span>R$ 250.000,00</span>
           </div>
         </div>
 
@@ -650,7 +650,7 @@ td.wrap{min-width:220px}
         <div class="section-head">
           <div>
             <h2>Registro de Passagens — Aires</h2>
-            <p>Contrato de R$ 300.000,00 · Vigência: 03/11/2026 a 02/11/2027 (12 meses)</p>
+            <p>Contrato de R$ 250.000,00 · Vigência: 03/11/2026 a 02/11/2027 (12 meses)</p>
           </div>
           <button class="btn btn-primary" id="btnNovaPassagem">
             <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
@@ -668,7 +668,7 @@ td.wrap{min-width:220px}
                   <th>Servidor(a)</th><th>Processo SEI</th><th>Setor</th><th>Destino</th>
                   <th>Ida</th><th>Volta</th><th>Companhia</th>
                   <th>Localizador</th><th>Bilhete</th>
-                  <th>Data Compra</th><th>Data Emissão</th>
+                  <th>Data Compra</th>
                   <th class="num">Valor</th><th>Motivo</th><th>Observação</th>
                   <th style="text-align:center">Ações</th>
                 </tr>
@@ -823,10 +823,10 @@ td.wrap{min-width:220px}
           <div class="field">
             <label for="fLocalizador">Localizador <span class="req">*</span></label>
             <input type="text" id="fLocalizador" required
-                   pattern="[A-Za-z]+" title="Use apenas letras (A-Z)"
-                   placeholder="Ex.: ABCDEFG" maxlength="12"
+                   pattern="[A-Za-z0-9]+" title="Use letras e números (A-Z, 0-9)"
+                   placeholder="Ex.: ABC123" maxlength="12"
                    style="text-transform:uppercase;letter-spacing:.5px">
-            <div class="hint">Somente letras</div>
+            <div class="hint">Letras e números</div>
           </div>
 
           <div class="field">
@@ -847,11 +847,6 @@ td.wrap{min-width:220px}
           </div>
 
           <div class="field">
-            <label for="fDataEmissao">Data da emissão da passagem</label>
-            <input type="date" id="fDataEmissao">
-          </div>
-
-          <div class="field full">
             <label for="fMotivo">Motivo da passagem</label>
             <input type="text" id="fMotivo" placeholder="Ex.: CONSAD, evento, capacitação...">
           </div>
@@ -996,7 +991,7 @@ td.wrap{min-width:220px}
    CONFIGURAÇÕES
    ============================================================ */
 const SENHA = 'apolo12';
-const VALOR_CONTRATO_AIRES = 300000;
+const VALOR_CONTRATO_AIRES = 250000;
 const INICIO_CONTRATO = new Date(2026, 10, 3);
 const FIM_CONTRATO    = new Date(2027, 10, 2);
 const KEY_PASSAGENS = 'saeb_aires_passagens_v1';
@@ -1425,8 +1420,8 @@ function renderDashboard(){
   const contratoBoxSub = document.getElementById('contratoBoxSub');
   if(contratoBoxSub){
     contratoBoxSub.textContent = filtroAtivo
-      ? `Contrato de R$ 300.000,00 · considerando apenas ${dashFiltroPassageiro}`
-      : 'Contrato de R$ 300.000,00 · Vigência: 03/11/2026 a 02/11/2027 (12 meses)';
+      ? `Contrato de R$ 250.000,00 · considerando apenas ${dashFiltroPassageiro}`
+      : 'Contrato de R$ 250.000,00 · Vigência: 03/11/2026 a 02/11/2027 (12 meses)';
   }
 
   renderEstimativa(total, saldo, filtroAtivo);
@@ -1530,7 +1525,6 @@ function gerarRelatorioExcel(){
   const dataArquivo = `${agora.getFullYear()}-${String(agora.getMonth()+1).padStart(2,'0')}-${String(agora.getDate()).padStart(2,'0')}`;
   const dataHoraBR  = agora.toLocaleString('pt-BR');
 
-  /* ---- Cálculos ---- */
   const totalPassagens = passagensAires.reduce((s,p) => s + (p.valor || 0), 0);
   const saldo   = Math.max(0, VALOR_CONTRATO_AIRES - totalPassagens);
   const pct     = Math.min(100, (totalPassagens / VALOR_CONTRATO_AIRES) * 100);
@@ -1557,7 +1551,6 @@ function gerarRelatorioExcel(){
   const vnTotal = VN_DATA.reduce((s,r) => s + r.valor, 0);
   const vnSaldo = 600000 - vnTotal;
 
-  /* ---- Helpers XML ---- */
   const cellXml = (val, styleId) => {
     const styleAttr = styleId ? ` ss:StyleID="${styleId}"` : '';
     if(val === null || val === undefined || val === ''){
@@ -1577,7 +1570,6 @@ function gerarRelatorioExcel(){
   const headerXml = (labels) => `<Row>${labels.map(l => cellXml(l, 'header')).join('')}</Row>`;
   const wsXml = (name, content) => `<Worksheet ss:Name="${esc(name)}"><Table>${content}</Table></Worksheet>`;
 
-  /* ===== Aba: Resumo ===== */
   const resumoContent = [
     rowXml(cellXml('RELATÓRIO DO DASHBOARD — SAEB', 'title')),
     rowXml(cellXml('Secretaria da Administração · Governo do Estado da Bahia', 'subtitle')),
@@ -1616,8 +1608,7 @@ function gerarRelatorioExcel(){
     rowXml(cellXml('Saldo disponível'), cellXml(vnSaldo, 'money'))
   ].join('');
 
-  /* ===== Aba: Passagens ===== */
-  const passHeaders = ['Servidor(a)','Processo SEI','Setor','Partida','Chegada','Data Ida','Data Volta','Companhia','Localizador','Bilhete','Data Compra','Data Emissão','Valor (R$)','Motivo','Observação','Status'];
+  const passHeaders = ['Servidor(a)','Processo SEI','Setor','Partida','Chegada','Data Ida','Data Volta','Companhia','Localizador','Bilhete','Data Compra','Valor (R$)','Motivo','Observação','Status'];
   const passContent = [
     rowXml(cellXml('PASSAGENS REGISTRADAS — AIRES', 'title')),
     rowXml(cellXml(`${passagensAires.length} registro(s) · Gerado em ${dataHoraBR}`)),
@@ -1635,7 +1626,6 @@ function gerarRelatorioExcel(){
       cellXml(p.localizador || ''),
       cellXml(p.bilhete || ''),
       cellXml(p.dataCompra ? dataBR(p.dataCompra) : ''),
-      cellXml(p.dataEmissao ? dataBR(p.dataEmissao) : ''),
       cellXml(p.valor || 0, 'money'),
       cellXml(p.motivo || ''),
       cellXml(p.obs || ''),
@@ -1643,7 +1633,6 @@ function gerarRelatorioExcel(){
     ))
   ].join('');
 
-  /* ===== Aba: Faturas ===== */
   const fatHeaders = ['Nº da Fatura','Emissão','Vencimento','Prazo Pagamento','Status','Período Ref.','Valor (R$)','Observação'];
   const fatContent = [
     rowXml(cellXml('FATURAS REGISTRADAS — AIRES', 'title')),
@@ -1666,7 +1655,6 @@ function gerarRelatorioExcel(){
     })
   ].join('');
 
-  /* ===== Aba: Canceladas ===== */
   const cancHeaders = ['Servidor(a)','Processo SEI','Setor','Destino','Data Compra','Cancelamento','Valor (R$)','Motivo','Validade do Crédito','Situação'];
   const cancContent = [
     rowXml(cellXml('PASSAGENS CANCELADAS — AIRES', 'title')),
@@ -1692,7 +1680,6 @@ function gerarRelatorioExcel(){
     })
   ].join('');
 
-  /* ===== Aba: VN Soares ===== */
   const vnHeaders = ['Nº','Servidor(a)','Processo SEI','Setor','Destino','Companhia','Data Compra','Data Ida','Data Volta','Valor (R$)','Motivo','Observação'];
   const vnContent = [
     rowXml(cellXml('REGISTRO DE VIAGENS — VN SOARES', 'title')),
@@ -1717,7 +1704,6 @@ function gerarRelatorioExcel(){
     ))
   ].join('');
 
-  /* ===== XML final ===== */
   const xml = `<?xml version="1.0" encoding="UTF-8"?>
 <?mso-application progid="Excel.Sheet"?>
 <Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet"
@@ -1761,7 +1747,6 @@ function gerarRelatorioExcel(){
   ${wsXml('VN Soares', vnContent)}
 </Workbook>`;
 
-  /* ---- Download ---- */
   const blob = new Blob([xml], { type: 'application/vnd.ms-excel;charset=utf-8' });
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
@@ -1898,7 +1883,7 @@ function renderAires(){
 
   const tbody = document.getElementById('airesTbody');
   if(!ativas.length){
-    tbody.innerHTML = `<tr><td colspan="15"><div class="empty">
+    tbody.innerHTML = `<tr><td colspan="14"><div class="empty">
       <strong>Nenhuma passagem ativa registrada</strong>
       Clique em "Adicionar nova passagem" para começar.
     </div></td></tr>`;
@@ -1917,7 +1902,6 @@ function renderAires(){
         </td>
         <td style="font-family:ui-monospace,monospace;font-size:11.5px">${esc(p.bilhete) || '—'}</td>
         <td>${p.dataCompra ? dataBR(p.dataCompra) : '—'}</td>
-        <td>${p.dataEmissao ? dataBR(p.dataEmissao) : '—'}</td>
         <td class="num">${fmtBRL(p.valor)}</td>
         <td class="wrap">${esc(p.motivo) || '—'}</td>
         <td class="wrap" style="font-size:11.5px;color:var(--cinza)">${esc(p.obs) || '—'}</td>
@@ -1993,7 +1977,6 @@ function abrirEdicao(id){
   document.getElementById('fLocalizador').value  = p.localizador || '';
   document.getElementById('fBilhete').value      = p.bilhete || '';
   document.getElementById('fDataCompra').value   = p.dataCompra || '';
-  document.getElementById('fDataEmissao').value  = p.dataEmissao || '';
   document.getElementById('fMotivo').value       = p.motivo || '';
   document.getElementById('fObs').value          = p.obs || '';
 
@@ -2015,8 +1998,9 @@ function abrirEdicao(id){
   abrirModal('modalPassagem');
 }
 
+/* Filtro do localizador — aceita letras e números */
 document.getElementById('fLocalizador').addEventListener('input', e => {
-  e.target.value = e.target.value.toUpperCase().replace(/[^A-Za-z]/g,'');
+  e.target.value = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g,'');
 });
 document.getElementById('fBilhete').addEventListener('input', e => {
   e.target.value = e.target.value.replace(/\D/g,'');
@@ -2039,7 +2023,6 @@ document.getElementById('formPassagem').addEventListener('submit', e => {
     localizador:  document.getElementById('fLocalizador').value.trim().toUpperCase(),
     bilhete:      document.getElementById('fBilhete').value.trim(),
     dataCompra:   document.getElementById('fDataCompra').value,
-    dataEmissao:  document.getElementById('fDataEmissao').value,
     motivo:       document.getElementById('fMotivo').value.trim(),
     obs:          document.getElementById('fObs').value.trim(),
   };
@@ -2487,7 +2470,6 @@ function iniciar(){
   carregarDados();
   renderAll();
 
-  /* Botão do relatório Excel */
   document.getElementById('btnRelatorioExcel').addEventListener('click', gerarRelatorioExcel);
 }
 
