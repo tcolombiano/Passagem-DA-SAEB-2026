@@ -140,7 +140,6 @@ body{
 .section-head h2{font-size:19px;font-weight:800;color:var(--azul);letter-spacing:-.3px}
 .section-head p{font-size:12.5px;color:var(--cinza);margin-top:3px}
 
-/* ---------- FILTRO DO DASHBOARD ---------- */
 .dash-filter{
   background:#fff;border-radius:var(--radius);box-shadow:var(--shadow);
   padding:14px 18px;margin-bottom:16px;
@@ -221,6 +220,8 @@ body{
 .btn-primary:hover{transform:translateY(-1px);box-shadow:0 7px 20px rgba(21,101,192,.4)}
 .btn-danger{background:linear-gradient(135deg,#e53935,#b71c1c);color:#fff;box-shadow:0 4px 14px rgba(198,40,40,.28)}
 .btn-danger:hover{transform:translateY(-1px)}
+.btn-success{background:linear-gradient(135deg,#1b8a5a,#0f6b43);color:#fff;box-shadow:0 4px 14px rgba(27,138,90,.28)}
+.btn-success:hover{transform:translateY(-1px);box-shadow:0 7px 20px rgba(27,138,90,.4)}
 .btn-ghost{background:#fff;color:var(--azul);border:1.5px solid var(--borda)}
 .btn-ghost:hover{background:var(--azul-bg);border-color:#b9d3ea}
 .btn-sm{padding:7px 12px;font-size:12px;border-radius:8px}
@@ -234,6 +235,7 @@ thead th{
   letter-spacing:.7px;font-weight:700;white-space:nowrap;
 }
 thead th.num{text-align:right}
+thead th.center{text-align:center}
 tbody td{padding:10px 12px;border-bottom:1px solid #eef2f7;vertical-align:top;line-height:1.42}
 tbody tr:nth-child(even){background:#fafcfe}
 tbody tr:hover{background:#eef6ff}
@@ -247,6 +249,52 @@ td.wrap{min-width:220px}
 .chip.red{background:#fdeaea;color:var(--vermelho)}
 .chip.gold{background:#fff5e0;color:#a86b00}
 .chip.green{background:#e5f6ee;color:var(--verde)}
+.chip.blue{background:#e3f2fd;color:#0d47a1}
+.chip.orange{background:#fff3e0;color:#e65100}
+
+.prazo-badge{
+  display:inline-flex;flex-direction:column;gap:2px;
+  padding:6px 10px;border-radius:8px;
+  font-size:11px;font-weight:800;line-height:1.25;white-space:nowrap;
+  border:1px solid transparent;
+}
+.prazo-badge small{font-size:10px;font-weight:500;opacity:.85}
+.prazo-badge.pago{background:#e5f6ee;color:#0f6b43;border-color:#bfe8d5}
+.prazo-badge.atraso{background:#fdeaea;color:#b71c1c;border-color:#f6c7c7}
+.prazo-badge.hoje{background:#fff3e0;color:#e65100;border-color:#ffd9a8}
+.prazo-badge.proximo{background:#fff8e1;color:#8a6100;border-color:#ffe9a8}
+.prazo-badge.ok{background:#e3f2fd;color:#0d47a1;border-color:#bbdefb}
+.prazo-badge.sem-data{background:#f1f5f9;color:#64748b;border-color:#e2e8f0}
+
+.chk-pago{
+  display:inline-flex;align-items:center;gap:6px;
+  cursor:pointer;font-size:11.5px;font-weight:700;
+  padding:5px 10px;border-radius:99px;
+  background:#f1f5f9;color:#64748b;
+  transition:.15s;white-space:nowrap;
+}
+.chk-pago input{
+  margin:0;cursor:pointer;accent-color:var(--verde);
+  width:14px;height:14px;
+}
+.chk-pago.is-pago{background:#e5f6ee;color:#0f6b43}
+.chk-pago:hover{transform:scale(1.04)}
+
+.check-pago{
+  display:flex;align-items:center;gap:10px;
+  padding:13px 15px;background:var(--azul-bg);
+  border:1.5px solid var(--borda);border-radius:10px;
+  cursor:pointer;transition:.15s;
+}
+.check-pago:hover{background:#e0ecf7;border-color:#b9d3ea}
+.check-pago input[type=checkbox]{
+  width:18px;height:18px;margin:0;cursor:pointer;
+  accent-color:var(--verde);
+}
+.check-pago label{
+  cursor:pointer;font-weight:700;color:var(--azul);font-size:13px;
+}
+.check-pago .desc{display:block;font-size:11px;color:var(--cinza);font-weight:500;margin-top:2px}
 
 .search{
   display:flex;align-items:center;gap:9px;background:#fff;
@@ -475,7 +523,7 @@ td.wrap{min-width:220px}
       <div class="sidebar-cancel-info" id="sidebarCancelInfo" title="Clique para ver detalhes dos créditos"></div>
       Secretaria da Administração<br>
       Governo do Estado da Bahia<br>
-      <span style="opacity:.6">v1.6 · Painel de Contratos</span>
+      <span style="opacity:.6">v1.8 · Painel de Contratos</span>
     </div>
   </aside>
 
@@ -515,9 +563,16 @@ td.wrap{min-width:220px}
             <h2>Dashboard — Contrato Aires</h2>
             <p>Resumo e projeção · toda passagem (ativa ou cancelada) é descontada do contrato</p>
           </div>
+          <button class="btn btn-success" id="btnRelatorioExcel" title="Exportar dados completos em planilha Excel (5 abas)">
+            <svg viewBox="0 0 24 24">
+              <path d="M12 3v12"/>
+              <path d="M7 10l5 5 5-5"/>
+              <path d="M4 21h16"/>
+            </svg>
+            Gerar Relatório Excel
+          </button>
         </div>
 
-        <!-- FILTRO DE PASSAGEIROS -->
         <div class="dash-filter">
           <div class="dash-filter-group">
             <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
@@ -645,9 +700,11 @@ td.wrap{min-width:220px}
               <thead>
                 <tr>
                   <th>Nº da Fatura</th>
-                  <th>Data de Emissão</th>
-                  <th>Data de Vencimento</th>
-                  <th>Período de Referência</th>
+                  <th>Emissão</th>
+                  <th>Vencimento</th>
+                  <th>Prazo Pagamento</th>
+                  <th class="center">Status</th>
+                  <th>Período Ref.</th>
                   <th class="num">Valor</th>
                   <th>Observação</th>
                   <th style="text-align:center">Ações</th>
@@ -887,6 +944,15 @@ td.wrap{min-width:220px}
             <label for="fatObs">Observação</label>
             <textarea id="fatObs" placeholder="Informações complementares"></textarea>
           </div>
+          <div class="field">
+            <div class="check-pago">
+              <input type="checkbox" id="fatPago">
+              <label for="fatPago">
+                Marcar esta fatura como paga
+                <span class="desc">Se desmarcado, ficará como <strong>Pendente</strong></span>
+              </label>
+            </div>
+          </div>
         </div>
       </div>
       <div class="modal-foot">
@@ -937,7 +1003,7 @@ const KEY_PASSAGENS = 'saeb_aires_passagens_v1';
 const KEY_FATURAS   = 'saeb_aires_faturas_v1';
 
 /* ============================================================
-   DADOS VN SOARES
+   DADOS VN SOARES (planilha original)
    ============================================================ */
 const VN_RAW = `
 1|Igor Oliveira Takenami|009.0277.2025.0053490-10|SGI|SSA x Assunção x SSA|LATAM|01/11/2025|09/11/2025|14/11/2025|3128.16|CLAD|Viagem Internacional
@@ -1113,6 +1179,41 @@ function statusCredito(validade){
   return { status:'Vigente', classe:'green', dias };
 }
 
+function calcPrazoPagamento(f){
+  if(f.pago){
+    return { status: 'Pago', classe: 'pago', dias: null, extra: f.vencimento ? 'quitada em dia' : 'quitada' };
+  }
+  if(!f.vencimento){
+    return { status: 'Sem vencimento', classe: 'sem-data', dias: null, extra: '' };
+  }
+  const hoje = new Date();
+  hoje.setHours(0,0,0,0);
+  const venc = new Date(f.vencimento + 'T12:00:00');
+  venc.setHours(0,0,0,0);
+  const diffDias = Math.round((venc - hoje) / (1000*60*60*24));
+
+  if(diffDias < 0){
+    return {
+      status: 'Em Atraso',
+      classe: 'atraso',
+      dias: diffDias,
+      extra: `${Math.abs(diffDias)} dia${Math.abs(diffDias) !== 1 ? 's' : ''} em atraso`
+    };
+  }
+  if(diffDias === 0){
+    return { status: 'Vence Hoje!', classe: 'hoje', dias: 0, extra: 'último dia para pagamento' };
+  }
+  if(diffDias <= 5){
+    return {
+      status: 'Próximo ao Vencimento',
+      classe: 'proximo',
+      dias: diffDias,
+      extra: `${diffDias} dia${diffDias !== 1 ? 's' : ''} restante${diffDias !== 1 ? 's' : ''}`
+    };
+  }
+  return { status: 'No Prazo', classe: 'ok', dias: diffDias, extra: `${diffDias} dias restantes` };
+}
+
 /* ============================================================
    ARMAZENAMENTO
    ============================================================ */
@@ -1124,6 +1225,7 @@ let dashFiltroPassageiro = '';
 function carregarDados(){
   try{ passagensAires = JSON.parse(localStorage.getItem(KEY_PASSAGENS)) || []; }catch(e){ passagensAires = []; }
   try{ faturasAires   = JSON.parse(localStorage.getItem(KEY_FATURAS))   || []; }catch(e){ faturasAires = []; }
+  faturasAires = faturasAires.map(f => ({ ...f, pago: f.pago === true }));
 }
 function salvarPassagens(){ localStorage.setItem(KEY_PASSAGENS, JSON.stringify(passagensAires)); }
 function salvarFaturas(){ localStorage.setItem(KEY_FATURAS, JSON.stringify(faturasAires)); }
@@ -1210,7 +1312,7 @@ document.getElementById('btnConfirmarSenha').addEventListener('click', confirmar
 senhaInput.addEventListener('keydown', e => { if(e.key === 'Enter'){ e.preventDefault(); confirmarSenha(); } });
 
 /* ============================================================
-   FILTRO DE PASSAGEIROS (Dashboard)
+   FILTRO DE PASSAGEIROS
    ============================================================ */
 function popularFiltroPassageiros(){
   const select = document.getElementById('dashFiltroPassageiro');
@@ -1224,14 +1326,13 @@ function popularFiltroPassageiros(){
   select.innerHTML = '<option value="">Todos os passageiros</option>' +
     nomes.map(n => `<option value="${esc(n)}"${n === dashFiltroPassageiro ? ' selected' : ''}>${esc(n)}</option>`).join('');
 }
-
 document.getElementById('dashFiltroPassageiro').addEventListener('change', e => {
   dashFiltroPassageiro = e.target.value;
   renderDashboard();
 });
 
 /* ============================================================
-   DASHBOARD (com filtro)
+   DASHBOARD
    ============================================================ */
 function renderDashboard(){
   popularFiltroPassageiros();
@@ -1249,7 +1350,11 @@ function renderDashboard(){
   const canceladas = base.filter(p => p.status === 'cancelada');
   const totalCanc  = canceladas.reduce((s,p) => s + (p.valor || 0), 0);
 
-  /* Banner de filtro ativo */
+  const fatPagas    = faturasAires.filter(f => f.pago === true);
+  const fatAbertas  = faturasAires.filter(f => f.pago !== true);
+  const totalFatPago   = fatPagas.reduce((s,f) => s + (f.valor || 0), 0);
+  const totalFatAberto = fatAbertas.reduce((s,f) => s + (f.valor || 0), 0);
+
   const infoEl = document.getElementById('dashFiltroInfo');
   if(filtroAtivo){
     infoEl.style.display = 'flex';
@@ -1258,20 +1363,15 @@ function renderDashboard(){
       <span>Filtro ativo: <strong>${esc(dashFiltroPassageiro)}</strong> · os indicadores abaixo refletem apenas este passageiro.</span>
       <button class="btn btn-ghost btn-sm" id="btnLimparFiltroInfo" style="margin-left:auto">Limpar filtro</button>
     `;
-    const btnLimpar = document.getElementById('btnLimparFiltroInfo');
-    if(btnLimpar){
-      btnLimpar.onclick = () => {
-        dashFiltroPassageiro = '';
-        document.getElementById('dashFiltroPassageiro').value = '';
-        renderDashboard();
-      };
-    }
+    document.getElementById('btnLimparFiltroInfo').onclick = () => {
+      dashFiltroPassageiro = '';
+      document.getElementById('dashFiltroPassageiro').value = '';
+      renderDashboard();
+    };
   } else {
     infoEl.style.display = 'none';
   }
 
-  /* Subtítulos adaptados ao filtro */
-  const subContrato = 'Vigência 03/11/2026 a 02/11/2027';
   const subTotal = filtroAtivo
     ? `${ativas.length} ativa(s) · ${canceladas.length} cancelada(s) · filtrado`
     : `${ativas.length} ativa(s) · ${canceladas.length} cancelada(s) — todas contam`;
@@ -1283,7 +1383,7 @@ function renderDashboard(){
     <div class="card" data-go="aires">
       <div class="lbl">Valor do contrato</div>
       <div class="val">${fmtBRL(VALOR_CONTRATO_AIRES)}</div>
-      <div class="sub">${subContrato}</div>
+      <div class="sub">Vigência 03/11/2026 a 02/11/2027</div>
     </div>
     <div class="card gold" data-go="aires">
       <div class="lbl">${filtroAtivo ? 'Total utilizado (filtrado)' : 'Total utilizado'}</div>
@@ -1305,15 +1405,23 @@ function renderDashboard(){
       <div class="val">${canceladas.length}</div>
       <div class="sub">${fmtBRL(totalCanc)} em créditos</div>
     </div>
+    <div class="card green" data-go="faturas">
+      <div class="lbl">Faturas Pagas</div>
+      <div class="val">${fatPagas.length}</div>
+      <div class="sub">${fmtBRL(totalFatPago)} quitados</div>
+    </div>
+    <div class="card gold" data-go="faturas">
+      <div class="lbl">Faturas em Aberto</div>
+      <div class="val">${fatAbertas.length}</div>
+      <div class="sub">${fmtBRL(totalFatAberto)} a pagar</div>
+    </div>
   `;
 
-  /* Barra */
   const barFill = document.getElementById('barFill');
   const barPct  = document.getElementById('barPct');
   if(barFill) barFill.style.setProperty('--p', pct.toFixed(2) + '%');
   if(barPct) barPct.textContent = pct.toFixed(1).replace('.', ',') + '%';
 
-  /* Subtítulo do quadro do contrato */
   const contratoBoxSub = document.getElementById('contratoBoxSub');
   if(contratoBoxSub){
     contratoBoxSub.textContent = filtroAtivo
@@ -1382,8 +1490,8 @@ function renderEstimativa(total, saldo, filtroAtivo){
     verBox.innerHTML = `<div class="veredito neutro">
       <div class="ico">i</div>
       <div>${filtroAtivo
-        ? `O passageiro <strong>${esc(dashFiltroPassageiro)}</strong> ainda não possui passagens registradas. Selecione outro passageiro ou "Todos" para ver os dados completos.`
-        : 'Nenhuma passagem registrada até o momento. Assim que a primeira passagem for lançada, o sistema calculará automaticamente o ritmo de consumo e a projeção de duração do saldo contratual.'}
+        ? `O passageiro <strong>${esc(dashFiltroPassageiro)}</strong> ainda não possui passagens registradas.`
+        : 'Nenhuma passagem registrada até o momento.'}
       </div>
     </div>`;
     return;
@@ -1391,35 +1499,284 @@ function renderEstimativa(total, saldo, filtroAtivo){
   if(saldo <= 0){
     verBox.innerHTML = `<div class="veredito warn">
       <div class="ico">!</div>
-      <div><strong>Saldo contratual esgotado.</strong> O valor de ${fmtBRL(VALOR_CONTRATO_AIRES)}
-      já foi totalmente comprometido ${filtroAtivo ? 'por este passageiro' : '(passagens ativas + canceladas)'}.
-      É necessário aditivo contratual ou novo processo licitatório.</div>
+      <div><strong>Saldo contratual esgotado.</strong></div>
     </div>`;
     return;
   }
   if(duracaoMeses >= mesesRestantes){
     verBox.innerHTML = `<div class="veredito ok">
       <div class="ico">✓</div>
-      <div><strong>${filtroAtivo ? 'No ritmo deste passageiro, o saldo tende a durar.' : 'O saldo tende a durar até o fim do contrato.'}</strong>
-      No ritmo atual de ${fmtBRL(consumoMensal)}/mês ${filtroAtivo ? 'deste passageiro' : '(incluindo canceladas)'},
-      o saldo restante cobre aproximadamente <strong>${fmtMeses(duracaoMeses)}</strong>, enquanto restam
-      <strong>${mesesRestantes.toFixed(1).replace('.', ',')} meses</strong> de vigência (término em 02/11/2027).</div>
+      <div><strong>O saldo tende a durar até o fim do contrato.</strong>
+      No ritmo de ${fmtBRL(consumoMensal)}/mês, o saldo cobre ${fmtMeses(duracaoMeses)},
+      enquanto restam ${mesesRestantes.toFixed(1).replace('.', ',')} meses de vigência.</div>
     </div>`;
   } else {
     const faltaMeses = (mesesRestantes - duracaoMeses).toFixed(1).replace('.', ',');
     verBox.innerHTML = `<div class="veredito warn">
       <div class="ico">!</div>
-      <div><strong>Atenção: risco de esgotamento antecipado do saldo.</strong>
-      No ritmo atual de ${fmtBRL(consumoMensal)}/mês ${filtroAtivo ? 'deste passageiro' : '(incluindo canceladas)'},
-      o saldo restante cobre apenas <strong>${fmtMeses(duracaoMeses)}</strong>, mas ainda restam
-      <strong>${mesesRestantes.toFixed(1).replace('.', ',')} meses</strong> de contrato.
-      Há uma lacuna estimada de <strong>${faltaMeses} meses</strong> sem cobertura contratual.</div>
+      <div><strong>Risco de esgotamento antecipado do saldo.</strong>
+      No ritmo de ${fmtBRL(consumoMensal)}/mês, o saldo cobre apenas ${fmtMeses(duracaoMeses)},
+      mas restam ${mesesRestantes.toFixed(1).replace('.', ',')} meses de contrato
+      (lacuna de ${faltaMeses} meses).</div>
     </div>`;
   }
 }
 
 /* ============================================================
-   RODAPÉ — info de canceladas
+   RELATÓRIO EXCEL
+   ============================================================ */
+function gerarRelatorioExcel(){
+  const agora = new Date();
+  const dataArquivo = `${agora.getFullYear()}-${String(agora.getMonth()+1).padStart(2,'0')}-${String(agora.getDate()).padStart(2,'0')}`;
+  const dataHoraBR  = agora.toLocaleString('pt-BR');
+
+  /* ---- Cálculos ---- */
+  const totalPassagens = passagensAires.reduce((s,p) => s + (p.valor || 0), 0);
+  const saldo   = Math.max(0, VALOR_CONTRATO_AIRES - totalPassagens);
+  const pct     = Math.min(100, (totalPassagens / VALOR_CONTRATO_AIRES) * 100);
+  const ativas  = passagensAires.filter(p => p.status !== 'cancelada');
+  const canceladas = passagensAires.filter(p => p.status === 'cancelada');
+  const totalCanc  = canceladas.reduce((s,p) => s + (p.valor || 0), 0);
+  const totalAtivas = ativas.reduce((s,p) => s + (p.valor || 0), 0);
+
+  const fatPagas    = faturasAires.filter(f => f.pago === true);
+  const fatAbertas  = faturasAires.filter(f => f.pago !== true);
+  const totalFatPago   = fatPagas.reduce((s,f) => s + (f.valor || 0), 0);
+  const totalFatAberto = fatAbertas.reduce((s,f) => s + (f.valor || 0), 0);
+  const totalFat       = totalFatPago + totalFatAberto;
+
+  const hoje = new Date();
+  const ref = hoje > INICIO_CONTRATO ? hoje : new Date(INICIO_CONTRATO);
+  const MS_DIA = 86400000;
+  const diasCorridos   = Math.max(30, (ref - INICIO_CONTRATO) / MS_DIA);
+  const mesesCorridos  = diasCorridos / 30.44;
+  const mesesRestantes = Math.max(0, (FIM_CONTRATO - ref) / MS_DIA / 30.44);
+  const consumoMensal  = totalPassagens > 0 ? totalPassagens / mesesCorridos : 0;
+  const duracaoMeses   = consumoMensal > 0 ? saldo / consumoMensal : Infinity;
+
+  const vnTotal = VN_DATA.reduce((s,r) => s + r.valor, 0);
+  const vnSaldo = 600000 - vnTotal;
+
+  /* ---- Helpers XML ---- */
+  const cellXml = (val, styleId) => {
+    const styleAttr = styleId ? ` ss:StyleID="${styleId}"` : '';
+    if(val === null || val === undefined || val === ''){
+      return `<Cell${styleAttr}/>`;
+    }
+    let tipo = 'String';
+    let valorXml;
+    if(typeof val === 'number' && isFinite(val)){
+      tipo = 'Number';
+      valorXml = String(val);
+    } else {
+      valorXml = esc(String(val));
+    }
+    return `<Cell${styleAttr}><Data ss:Type="${tipo}">${valorXml}</Data></Cell>`;
+  };
+  const rowXml = (...cells) => `<Row>${cells.join('')}</Row>`;
+  const headerXml = (labels) => `<Row>${labels.map(l => cellXml(l, 'header')).join('')}</Row>`;
+  const wsXml = (name, content) => `<Worksheet ss:Name="${esc(name)}"><Table>${content}</Table></Worksheet>`;
+
+  /* ===== Aba: Resumo ===== */
+  const resumoContent = [
+    rowXml(cellXml('RELATÓRIO DO DASHBOARD — SAEB', 'title')),
+    rowXml(cellXml('Secretaria da Administração · Governo do Estado da Bahia', 'subtitle')),
+    rowXml(cellXml(`Gerado em ${dataHoraBR}`)),
+    rowXml(cellXml('')),
+    rowXml(cellXml('CONTRATO AIRES', 'section')),
+    rowXml(cellXml('Indicador', 'kpiLabel'), cellXml('Valor', 'kpiLabel')),
+    rowXml(cellXml('Valor do contrato'), cellXml(VALOR_CONTRATO_AIRES, 'money')),
+    rowXml(cellXml('Total utilizado'), cellXml(totalPassagens, 'money')),
+    rowXml(cellXml('Saldo disponível'), cellXml(saldo, 'money')),
+    rowXml(cellXml('% consumido'), cellXml(pct.toFixed(2) + '%')),
+    rowXml(cellXml('Vigência'), cellXml('03/11/2026 a 02/11/2027')),
+    rowXml(cellXml('')),
+    rowXml(cellXml('PASSAGENS', 'section')),
+    rowXml(cellXml('Situação', 'kpiLabel'), cellXml('Qtd.', 'kpiLabel'), cellXml('Valor', 'kpiLabel')),
+    rowXml(cellXml('Ativas'), cellXml(ativas.length), cellXml(totalAtivas, 'money')),
+    rowXml(cellXml('Canceladas'), cellXml(canceladas.length), cellXml(totalCanc, 'money')),
+    rowXml(cellXml('TOTAL'), cellXml(passagensAires.length), cellXml(totalPassagens, 'money')),
+    rowXml(cellXml('')),
+    rowXml(cellXml('FATURAS', 'section')),
+    rowXml(cellXml('Situação', 'kpiLabel'), cellXml('Qtd.', 'kpiLabel'), cellXml('Valor', 'kpiLabel')),
+    rowXml(cellXml('Pagas'), cellXml(fatPagas.length), cellXml(totalFatPago, 'money')),
+    rowXml(cellXml('Em aberto'), cellXml(fatAbertas.length), cellXml(totalFatAberto, 'money')),
+    rowXml(cellXml('TOTAL'), cellXml(faturasAires.length), cellXml(totalFat, 'money')),
+    rowXml(cellXml('')),
+    rowXml(cellXml('ESTIMATIVA DE DURAÇÃO DO SALDO', 'section')),
+    rowXml(cellXml('Indicador', 'kpiLabel'), cellXml('Valor', 'kpiLabel')),
+    rowXml(cellXml('Consumo médio mensal'), cellXml(consumoMensal, 'money')),
+    rowXml(cellXml('Duração estimada do saldo'), cellXml(isFinite(duracaoMeses) ? duracaoMeses.toFixed(1) + ' meses' : '∞')),
+    rowXml(cellXml('Meses restantes do contrato'), cellXml(mesesRestantes.toFixed(1) + ' meses')),
+    rowXml(cellXml('')),
+    rowXml(cellXml('CONTRATO VN SOARES', 'section')),
+    rowXml(cellXml('Indicador', 'kpiLabel'), cellXml('Valor', 'kpiLabel')),
+    rowXml(cellXml('Valor do contrato'), cellXml(600000, 'money')),
+    rowXml(cellXml('Total utilizado'), cellXml(vnTotal, 'money')),
+    rowXml(cellXml('Saldo disponível'), cellXml(vnSaldo, 'money'))
+  ].join('');
+
+  /* ===== Aba: Passagens ===== */
+  const passHeaders = ['Servidor(a)','Processo SEI','Setor','Partida','Chegada','Data Ida','Data Volta','Companhia','Localizador','Bilhete','Data Compra','Data Emissão','Valor (R$)','Motivo','Observação','Status'];
+  const passContent = [
+    rowXml(cellXml('PASSAGENS REGISTRADAS — AIRES', 'title')),
+    rowXml(cellXml(`${passagensAires.length} registro(s) · Gerado em ${dataHoraBR}`)),
+    rowXml(cellXml('')),
+    headerXml(passHeaders),
+    ...passagensAires.map(p => rowXml(
+      cellXml(p.nome || ''),
+      cellXml(p.processo || ''),
+      cellXml(p.setor || ''),
+      cellXml(p.partida || ''),
+      cellXml(p.chegada || ''),
+      cellXml(p.ida ? dataBR(p.ida) : ''),
+      cellXml(p.volta ? dataBR(p.volta) : ''),
+      cellXml(p.cia || ''),
+      cellXml(p.localizador || ''),
+      cellXml(p.bilhete || ''),
+      cellXml(p.dataCompra ? dataBR(p.dataCompra) : ''),
+      cellXml(p.dataEmissao ? dataBR(p.dataEmissao) : ''),
+      cellXml(p.valor || 0, 'money'),
+      cellXml(p.motivo || ''),
+      cellXml(p.obs || ''),
+      cellXml(p.status === 'cancelada' ? 'Cancelada' : 'Ativa')
+    ))
+  ].join('');
+
+  /* ===== Aba: Faturas ===== */
+  const fatHeaders = ['Nº da Fatura','Emissão','Vencimento','Prazo Pagamento','Status','Período Ref.','Valor (R$)','Observação'];
+  const fatContent = [
+    rowXml(cellXml('FATURAS REGISTRADAS — AIRES', 'title')),
+    rowXml(cellXml(`${faturasAires.length} registro(s) · ${fatPagas.length} paga(s) · ${fatAbertas.length} em aberto`)),
+    rowXml(cellXml(`Gerado em ${dataHoraBR}`)),
+    rowXml(cellXml('')),
+    headerXml(fatHeaders),
+    ...faturasAires.map(f => {
+      const prazo = calcPrazoPagamento(f);
+      return rowXml(
+        cellXml(f.numero || ''),
+        cellXml(f.data ? dataBR(f.data) : ''),
+        cellXml(f.vencimento ? dataBR(f.vencimento) : ''),
+        cellXml(prazo.status),
+        cellXml(f.pago ? 'Pago' : 'Pendente'),
+        cellXml(f.periodo || ''),
+        cellXml(f.valor || 0, 'money'),
+        cellXml(f.obs || '')
+      );
+    })
+  ].join('');
+
+  /* ===== Aba: Canceladas ===== */
+  const cancHeaders = ['Servidor(a)','Processo SEI','Setor','Destino','Data Compra','Cancelamento','Valor (R$)','Motivo','Validade do Crédito','Situação'];
+  const cancContent = [
+    rowXml(cellXml('PASSAGENS CANCELADAS — AIRES', 'title')),
+    rowXml(cellXml(`${canceladas.length} registro(s) · Crédito válido por 1 ano da data da compra`)),
+    rowXml(cellXml(`Gerado em ${dataHoraBR}`)),
+    rowXml(cellXml('')),
+    headerXml(cancHeaders),
+    ...canceladas.map(p => {
+      const val = calcValidadeCredito(p);
+      const st  = statusCredito(val);
+      return rowXml(
+        cellXml(p.nome || ''),
+        cellXml(p.processo || ''),
+        cellXml(p.setor || ''),
+        cellXml(`${p.partida || ''} → ${p.chegada || ''}`),
+        cellXml(p.dataCompra ? dataBR(p.dataCompra) : ''),
+        cellXml(p.canceladaEm ? dataBR(p.canceladaEm) : ''),
+        cellXml(p.valor || 0, 'money'),
+        cellXml(p.motivo || ''),
+        cellXml(val ? dataBR(val.toISOString()) : '—'),
+        cellXml(st.status)
+      );
+    })
+  ].join('');
+
+  /* ===== Aba: VN Soares ===== */
+  const vnHeaders = ['Nº','Servidor(a)','Processo SEI','Setor','Destino','Companhia','Data Compra','Data Ida','Data Volta','Valor (R$)','Motivo','Observação'];
+  const vnContent = [
+    rowXml(cellXml('REGISTRO DE VIAGENS — VN SOARES', 'title')),
+    rowXml(cellXml('Contrato 22/10/2025 a 21/10/2026 · Viaje Bem Mais LTDA')),
+    rowXml(cellXml(`${VN_DATA.length} registro(s) · Total R$ ${vnTotal.toLocaleString('pt-BR',{minimumFractionDigits:2})}`)),
+    rowXml(cellXml(`Gerado em ${dataHoraBR}`)),
+    rowXml(cellXml('')),
+    headerXml(vnHeaders),
+    ...VN_DATA.map(r => rowXml(
+      cellXml(r.n),
+      cellXml(r.servidor),
+      cellXml(r.processo),
+      cellXml(r.setor),
+      cellXml(r.destino),
+      cellXml(r.cia),
+      cellXml(r.compra),
+      cellXml(r.ida),
+      cellXml(r.volta),
+      cellXml(r.valor, 'money'),
+      cellXml(r.motivo),
+      cellXml(r.obs)
+    ))
+  ].join('');
+
+  /* ===== XML final ===== */
+  const xml = `<?xml version="1.0" encoding="UTF-8"?>
+<?mso-application progid="Excel.Sheet"?>
+<Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet"
+  xmlns:o="urn:schemas-microsoft-com:office:office"
+  xmlns:x="urn:schemas-microsoft-com:office:excel"
+  xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet"
+  xmlns:html="http://www.w3.org/TR/REC-html40">
+  <Styles>
+    <Style ss:ID="Default" ss:Name="Normal">
+      <Alignment ss:Vertical="Top"/>
+      <Font ss:FontName="Calibri" ss:Size="10"/>
+    </Style>
+    <Style ss:ID="title">
+      <Font ss:Bold="1" ss:Size="15" ss:Color="#0A3D62"/>
+    </Style>
+    <Style ss:ID="subtitle">
+      <Font ss:Italic="1" ss:Size="10" ss:Color="#64748B"/>
+    </Style>
+    <Style ss:ID="section">
+      <Font ss:Bold="1" ss:Size="11" ss:Color="#1565C0"/>
+      <Interior ss:Color="#E8F1FA" ss:Pattern="Solid"/>
+    </Style>
+    <Style ss:ID="header">
+      <Font ss:Bold="1" ss:Color="#FFFFFF" ss:Size="10"/>
+      <Interior ss:Color="#0A3D62" ss:Pattern="Solid"/>
+      <Alignment ss:Horizontal="Center" ss:Vertical="Center" ss:WrapText="1"/>
+    </Style>
+    <Style ss:ID="kpiLabel">
+      <Font ss:Bold="1" ss:Color="#0A3D62"/>
+      <Interior ss:Color="#F5F9FD" ss:Pattern="Solid"/>
+    </Style>
+    <Style ss:ID="money">
+      <NumberFormat ss:Format="&quot;R$&quot;\\ #,##0.00"/>
+      <Alignment ss:Horizontal="Right"/>
+    </Style>
+  </Styles>
+  ${wsXml('Resumo', resumoContent)}
+  ${wsXml('Passagens', passContent)}
+  ${wsXml('Faturas', fatContent)}
+  ${wsXml('Canceladas', cancContent)}
+  ${wsXml('VN Soares', vnContent)}
+</Workbook>`;
+
+  /* ---- Download ---- */
+  const blob = new Blob([xml], { type: 'application/vnd.ms-excel;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `Relatorio-SAEB-Passagens-${dataArquivo}.xls`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  setTimeout(() => URL.revokeObjectURL(url), 800);
+
+  toast('Relatório Excel gerado! Verifique seus downloads.', 'ok');
+}
+
+/* ============================================================
+   RODAPÉ
    ============================================================ */
 function renderSidebarCancelInfo(){
   const box = document.getElementById('sidebarCancelInfo');
@@ -1437,13 +1794,8 @@ function renderSidebarCancelInfo(){
   canceladas.forEach(p => {
     const val = calcValidadeCredito(p);
     const st  = statusCredito(val);
-    if(st.status === 'Expirado'){
-      nExpirado++;
-    } else {
-      totalVig += p.valor || 0;
-      nVig++;
-      if(st.status === 'Expirando') nExpirando++;
-    }
+    if(st.status === 'Expirado'){ nExpirado++; }
+    else { totalVig += p.valor || 0; nVig++; if(st.status === 'Expirando') nExpirando++; }
   });
 
   box.innerHTML = `
@@ -1695,9 +2047,7 @@ document.getElementById('formPassagem').addEventListener('submit', e => {
   if(modoCancelada){
     dados.status = 'cancelada';
     const dataCanc = document.getElementById('fDataCancelamento').value;
-    dados.canceladaEm = dataCanc
-      ? new Date(dataCanc + 'T12:00:00').toISOString()
-      : new Date().toISOString();
+    dados.canceladaEm = dataCanc ? new Date(dataCanc + 'T12:00:00').toISOString() : new Date().toISOString();
   } else {
     dados.status = 'ativa';
   }
@@ -1744,7 +2094,7 @@ document.getElementById('airesTbody').addEventListener('click', e => {
 });
 
 /* ============================================================
-   CANCELADAS — TABELA
+   CANCELADAS
    ============================================================ */
 function renderCanceladas(){
   const canceladas = passagensAires.filter(p => p.status === 'cancelada');
@@ -1863,12 +2213,8 @@ function renderModalCancelamentos(){
 
   let totalVigente = 0, totalExpirado = 0, nVig = 0, nExp = 0;
   enriched.forEach(p => {
-    if(p.statusCred.status === 'Expirado'){
-      totalExpirado += p.valor || 0;
-    } else {
-      totalVigente += p.valor || 0;
-      nVig++;
-    }
+    if(p.statusCred.status === 'Expirado'){ totalExpirado += p.valor || 0; }
+    else { totalVigente += p.valor || 0; nVig++; }
     if(p.statusCred.status === 'Expirando') nExp++;
   });
 
@@ -1928,7 +2274,6 @@ function renderModalCancelamentos(){
             <div class="meta">
               Proc. ${esc(p.processo) || '—'} · Setor ${esc(p.setor) || '—'}
               ${p.motivo ? ' · Motivo: ' + esc(p.motivo) : ''}
-              ${p.localizador ? ' · Localizador: ' + esc(p.localizador) : ''}
             </div>
           </div>
           <div class="rt">
@@ -1953,25 +2298,34 @@ function renderModalCancelamentos(){
 let editandoFaturaId = null;
 
 function renderFaturas(){
-  const totalFat  = faturasAires.reduce((s,f) => s + (f.valor || 0), 0);
-  const totalPass = passagensAires.reduce((s,p) => s + (p.valor || 0), 0);
+  const fatPagas    = faturasAires.filter(f => f.pago === true);
+  const fatAbertas  = faturasAires.filter(f => f.pago !== true);
+  const totalFatPago   = fatPagas.reduce((s,f) => s + (f.valor || 0), 0);
+  const totalFatAberto = fatAbertas.reduce((s,f) => s + (f.valor || 0), 0);
+  const totalFat       = totalFatPago + totalFatAberto;
+  const totalPass      = passagensAires.reduce((s,p) => s + (p.valor || 0), 0);
   const diff = totalFat - totalPass;
 
   document.getElementById('faturasCards').innerHTML = `
-    <div class="card" data-go="faturas">
-      <div class="lbl">Faturas registradas</div>
-      <div class="val">${faturasAires.length}</div>
-      <div class="sub">Documentos lançados</div>
+    <div class="card green" data-go="faturas">
+      <div class="lbl">Faturas Pagas</div>
+      <div class="val">${fatPagas.length}</div>
+      <div class="sub">${fmtBRL(totalFatPago)} quitados</div>
     </div>
     <div class="card gold" data-go="faturas">
-      <div class="lbl">Total faturado</div>
+      <div class="lbl">Faturas em Aberto</div>
+      <div class="val">${fatAbertas.length}</div>
+      <div class="sub">${fmtBRL(totalFatAberto)} a pagar</div>
+    </div>
+    <div class="card" data-go="faturas">
+      <div class="lbl">Total Faturado</div>
       <div class="val">${fmtBRL(totalFat)}</div>
-      <div class="sub">Soma das faturas</div>
+      <div class="sub">${faturasAires.length} fatura(s) · paga + aberta</div>
     </div>
     <div class="card green" data-go="aires">
-      <div class="lbl">Total em passagens</div>
+      <div class="lbl">Total em Passagens</div>
       <div class="val">${fmtBRL(totalPass)}</div>
-      <div class="sub">Todas as passagens (ativas + canceladas)</div>
+      <div class="sub">Todas as passagens</div>
     </div>
     <div class="card ${Math.abs(diff) > 1 ? 'red' : 'green'}" data-go="dashboard">
       <div class="lbl">Diferença (faturas × passagens)</div>
@@ -1982,32 +2336,48 @@ function renderFaturas(){
 
   const tbody = document.getElementById('faturasTbody');
   if(!faturasAires.length){
-    tbody.innerHTML = `<tr><td colspan="7"><div class="empty">
+    tbody.innerHTML = `<tr><td colspan="9"><div class="empty">
       <strong>Nenhuma fatura registrada</strong>
       Clique em "Adicionar fatura" para lançar o primeiro documento.
     </div></td></tr>`;
     return;
   }
 
-  tbody.innerHTML = faturasAires.slice().reverse().map(f => `
-    <tr>
-      <td class="td-nome">${esc(f.numero)}</td>
-      <td>${f.data ? dataBR(f.data) : '—'}</td>
-      <td>${f.vencimento ? dataBR(f.vencimento) : '—'}</td>
-      <td>${esc(f.periodo) || '—'}</td>
-      <td class="num">${fmtBRL(f.valor)}</td>
-      <td class="wrap">${esc(f.obs) || '—'}</td>
-      <td style="white-space:nowrap;text-align:center">
-        <button class="btn btn-ghost btn-sm" data-edit-fat="${f.id}">Editar</button>
-        <button class="btn btn-danger btn-sm" data-del-fat="${f.id}" style="margin-left:4px">Excluir</button>
-      </td>
-    </tr>
-  `).join('');
+  tbody.innerHTML = faturasAires.slice().reverse().map(f => {
+    const prazo = calcPrazoPagamento(f);
+    return `
+      <tr>
+        <td class="td-nome">${esc(f.numero)}</td>
+        <td>${f.data ? dataBR(f.data) : '—'}</td>
+        <td>${f.vencimento ? dataBR(f.vencimento) : '—'}</td>
+        <td>
+          <span class="prazo-badge ${prazo.classe}">
+            ${esc(prazo.status)}
+            ${prazo.extra ? `<small>${esc(prazo.extra)}</small>` : ''}
+          </span>
+        </td>
+        <td style="text-align:center">
+          <label class="chk-pago ${f.pago ? 'is-pago' : ''}" title="Clique para alternar pago/pendente">
+            <input type="checkbox" ${f.pago ? 'checked' : ''} data-toggle-pago="${f.id}">
+            <span>${f.pago ? 'Pago' : 'Pendente'}</span>
+          </label>
+        </td>
+        <td>${esc(f.periodo) || '—'}</td>
+        <td class="num">${fmtBRL(f.valor)}</td>
+        <td class="wrap">${esc(f.obs) || '—'}</td>
+        <td style="white-space:nowrap;text-align:center">
+          <button class="btn btn-ghost btn-sm" data-edit-fat="${f.id}">Editar</button>
+          <button class="btn btn-danger btn-sm" data-del-fat="${f.id}" style="margin-left:4px">Excluir</button>
+        </td>
+      </tr>
+    `;
+  }).join('');
 }
 
 document.getElementById('btnNovaFatura').addEventListener('click', () => {
   editandoFaturaId = null;
   document.getElementById('formFatura').reset();
+  document.getElementById('fatPago').checked = false;
   document.getElementById('modalFaturaTitulo').textContent = 'Adicionar fatura';
   abrirModal('modalFatura');
 });
@@ -2021,7 +2391,8 @@ document.getElementById('formFatura').addEventListener('submit', e => {
     vencimento: document.getElementById('fatVencimento').value,
     periodo:    document.getElementById('fatPeriodo').value.trim(),
     valor:      parseFloat(document.getElementById('fatValor').value) || 0,
-    obs:        document.getElementById('fatObs').value.trim()
+    obs:        document.getElementById('fatObs').value.trim(),
+    pago:       document.getElementById('fatPago').checked === true
   };
 
   if(editandoFaturaId){
@@ -2039,9 +2410,30 @@ document.getElementById('formFatura').addEventListener('submit', e => {
 });
 
 document.getElementById('faturasTbody').addEventListener('click', e => {
-  const btnEdit = e.target.closest('[data-edit-fat]');
-  const btnDel  = e.target.closest('[data-del-fat]');
+  const chk = e.target.closest('input[data-toggle-pago]');
+  if(chk){
+    e.preventDefault();
+    const id = chk.dataset.togglePago;
+    const fat = faturasAires.find(x => x.id === id);
+    if(!fat) return;
+    const estadoAtual = fat.pago === true;
+    chk.checked = estadoAtual;
 
+    pedirSenha(() => {
+      fat.pago = !estadoAtual;
+      salvarFaturas();
+      renderAll();
+      toast(
+        fat.pago
+          ? `Fatura ${fat.numero} marcada como PAGA.`
+          : `Fatura ${fat.numero} marcada como PENDENTE.`,
+        fat.pago ? 'ok' : 'err'
+      );
+    });
+    return;
+  }
+
+  const btnEdit = e.target.closest('[data-edit-fat]');
   if(btnEdit){
     const id = btnEdit.dataset.editFat;
     pedirSenha(() => {
@@ -2055,10 +2447,13 @@ document.getElementById('faturasTbody').addEventListener('click', e => {
       document.getElementById('fatPeriodo').value    = f.periodo;
       document.getElementById('fatValor').value      = f.valor;
       document.getElementById('fatObs').value        = f.obs;
+      document.getElementById('fatPago').checked    = f.pago === true;
       abrirModal('modalFatura');
     });
+    return;
   }
 
+  const btnDel = e.target.closest('[data-del-fat]');
   if(btnDel){
     const id = btnDel.dataset.delFat;
     pedirSenha(() => {
@@ -2091,6 +2486,9 @@ function iniciar(){
     hoje.toLocaleDateString('pt-BR', { day:'2-digit', month:'long', year:'numeric' });
   carregarDados();
   renderAll();
+
+  /* Botão do relatório Excel */
+  document.getElementById('btnRelatorioExcel').addEventListener('click', gerarRelatorioExcel);
 }
 
 iniciar();
