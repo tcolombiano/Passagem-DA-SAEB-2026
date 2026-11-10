@@ -383,9 +383,10 @@ td.wrap{min-width:220px}
 .modal-body{padding:22px 24px}
 .modal-foot{
   padding:16px 24px;border-top:1px solid var(--borda);
-  display:flex;justify-content:flex-end;gap:10px;
+  display:flex;justify-content:flex-end;gap:10px;align-items:center;
   position:sticky;bottom:0;background:#fff;
 }
+.modal-foot .btn-excluir{margin-right:auto}
 .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:15px}
 .field{display:flex;flex-direction:column;gap:6px}
 .field.full{grid-column:1/-1}
@@ -523,7 +524,7 @@ td.wrap{min-width:220px}
       <div class="sidebar-cancel-info" id="sidebarCancelInfo" title="Clique para ver detalhes dos créditos"></div>
       Secretaria da Administração<br>
       Governo do Estado da Bahia<br>
-      <span style="opacity:.6">v1.9 · Painel de Contratos</span>
+      <span style="opacity:.6">v2.0 · Painel de Contratos</span>
     </div>
   </aside>
 
@@ -865,6 +866,15 @@ td.wrap{min-width:220px}
       </div>
 
       <div class="modal-foot">
+        <button type="button" class="btn btn-danger btn-excluir" id="btnExcluirPassagem" style="display:none" title="Excluir permanentemente este registro">
+          <svg viewBox="0 0 24 24">
+            <path d="M3 6h18"/>
+            <path d="M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2"/>
+            <path d="M6 6l1 14a2 2 0 002 2h6a2 2 0 002-2l1-14"/>
+            <path d="M10 11v6M14 11v6"/>
+          </svg>
+          Excluir passagem
+        </button>
         <button type="button" class="btn btn-ghost" data-close="modalPassagem">Cancelar</button>
         <button type="submit" class="btn btn-primary">
           <svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg>
@@ -951,6 +961,15 @@ td.wrap{min-width:220px}
         </div>
       </div>
       <div class="modal-foot">
+        <button type="button" class="btn btn-danger btn-excluir" id="btnExcluirFatura" style="display:none" title="Excluir permanentemente esta fatura">
+          <svg viewBox="0 0 24 24">
+            <path d="M3 6h18"/>
+            <path d="M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2"/>
+            <path d="M6 6l1 14a2 2 0 002 2h6a2 2 0 002-2l1-14"/>
+            <path d="M10 11v6M14 11v6"/>
+          </svg>
+          Excluir fatura
+        </button>
         <button type="button" class="btn btn-ghost" data-close="modalFatura">Cancelar</button>
         <button type="submit" class="btn btn-primary">Salvar fatura</button>
       </div>
@@ -998,7 +1017,7 @@ const KEY_PASSAGENS = 'saeb_aires_passagens_v1';
 const KEY_FATURAS   = 'saeb_aires_faturas_v1';
 
 /* ============================================================
-   DADOS VN SOARES (planilha original)
+   DADOS VN SOARES
    ============================================================ */
 const VN_RAW = `
 1|Igor Oliveira Takenami|009.0277.2025.0053490-10|SGI|SSA x Assunção x SSA|LATAM|01/11/2025|09/11/2025|14/11/2025|3128.16|CLAD|Viagem Internacional
@@ -1926,6 +1945,7 @@ function limparFormPassagem(){
   document.getElementById('fieldCancelamento').style.display = 'none';
   document.getElementById('hintDataCompra').style.display = 'none';
   document.getElementById('fDataCancelamento').required = false;
+  document.getElementById('btnExcluirPassagem').style.display = 'none';
 }
 
 document.getElementById('btnNovaPassagem').addEventListener('click', () => {
@@ -1936,6 +1956,7 @@ document.getElementById('btnNovaPassagem').addEventListener('click', () => {
   document.getElementById('fieldCancelamento').style.display = 'none';
   document.getElementById('hintDataCompra').style.display = 'none';
   document.getElementById('fDataCancelamento').required = false;
+  document.getElementById('btnExcluirPassagem').style.display = 'none';
   abrirModal('modalPassagem');
 });
 
@@ -1948,6 +1969,7 @@ document.getElementById('btnNovaCancelada').addEventListener('click', () => {
   document.getElementById('hintDataCompra').style.display = '';
   document.getElementById('fDataCancelamento').required = false;
   document.getElementById('fDataCancelamento').value = new Date().toISOString().split('T')[0];
+  document.getElementById('btnExcluirPassagem').style.display = 'none';
   abrirModal('modalPassagem');
 });
 
@@ -1995,8 +2017,27 @@ function abrirEdicao(id){
     inputCanc.value = '';
   }
 
+  /* Mostra o botão de excluir quando editando */
+  document.getElementById('btnExcluirPassagem').style.display = 'inline-flex';
+
   abrirModal('modalPassagem');
 }
+
+/* Excluir passagem (a partir do modal) */
+document.getElementById('btnExcluirPassagem').addEventListener('click', () => {
+  if(!editandoId) return;
+  const p = passagensAires.find(x => x.id === editandoId);
+  if(!p) return;
+
+  pedirSenha(() => {
+    passagensAires = passagensAires.filter(x => x.id !== editandoId);
+    salvarPassagens();
+    fecharModal('modalPassagem');
+    limparFormPassagem();
+    renderAll();
+    toast(`Passagem de ${p.nome} excluída permanentemente.`, 'err');
+  });
+});
 
 /* Filtro do localizador — aceita letras e números */
 document.getElementById('fLocalizador').addEventListener('input', e => {
@@ -2362,6 +2403,7 @@ document.getElementById('btnNovaFatura').addEventListener('click', () => {
   document.getElementById('formFatura').reset();
   document.getElementById('fatPago').checked = false;
   document.getElementById('modalFaturaTitulo').textContent = 'Adicionar fatura';
+  document.getElementById('btnExcluirFatura').style.display = 'none';
   abrirModal('modalFatura');
 });
 
@@ -2390,6 +2432,23 @@ document.getElementById('formFatura').addEventListener('submit', e => {
   salvarFaturas();
   fecharModal('modalFatura');
   renderAll();
+});
+
+/* Excluir fatura (a partir do modal) */
+document.getElementById('btnExcluirFatura').addEventListener('click', () => {
+  if(!editandoFaturaId) return;
+  const f = faturasAires.find(x => x.id === editandoFaturaId);
+  if(!f) return;
+
+  pedirSenha(() => {
+    faturasAires = faturasAires.filter(x => x.id !== editandoFaturaId);
+    salvarFaturas();
+    fecharModal('modalFatura');
+    editandoFaturaId = null;
+    document.getElementById('btnExcluirFatura').style.display = 'none';
+    renderAll();
+    toast(`Fatura ${f.numero} excluída permanentemente.`, 'err');
+  });
 });
 
 document.getElementById('faturasTbody').addEventListener('click', e => {
@@ -2431,6 +2490,10 @@ document.getElementById('faturasTbody').addEventListener('click', e => {
       document.getElementById('fatValor').value      = f.valor;
       document.getElementById('fatObs').value        = f.obs;
       document.getElementById('fatPago').checked    = f.pago === true;
+
+      /* Mostra o botão de excluir quando editando */
+      document.getElementById('btnExcluirFatura').style.display = 'inline-flex';
+
       abrirModal('modalFatura');
     });
     return;
